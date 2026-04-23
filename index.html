@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <title>汇虹数智科技 · 一把长在身体里的钥匙</title>
+  <meta name="description" content="汇虹数智科技 · 虹膜识别核心源代码自主。针对安防、门禁、隐私、冷钱包等场景独立定制模组，无接触、活体检测、断网可用。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- Grain / noise 氛围层 -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ───────── 1. NAV ───────── -->
+  <nav class="nav" id="nav" aria-label="主导航">
+    <a class="nav-logo" href="#hero" aria-label="汇虹数智科技 首页">
+      <svg class="nav-logo-mark" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+        <circle cx="11" cy="11" r="10" fill="none" stroke="currentColor" stroke-width="1"/>
+        <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1"/>
+        <circle cx="11" cy="11" r="2.5" fill="currentColor"/>
+      </svg>
+      <span class="nav-logo-text">
+        <span class="nav-logo-cn">汇虹数智</span>
+        <span class="nav-logo-en">HUIHONG</span>
+      </span>
+    </a>
+    <div class="nav-links" role="list">
+      <a class="nav-link" href="#scenarios" role="listitem">场景</a>
+      <a class="nav-link" href="#cases" role="listitem">案例</a>
+      <a class="nav-link" href="#tech" role="listitem">技术</a>
+      <a class="nav-link" href="#about" role="listitem">关于</a>
+      <a class="nav-link" href="#contact" role="listitem">联系</a>
+    </div>
+    <a class="btn btn-ghost nav-cta" href="#contact">申请 Demo</a>
+  </nav>
+
+  <!-- ───────── 2. HERO ───────── -->
+  <section class="hero" id="hero">
+    <canvas id="hero-3d-canvas" aria-hidden="true"></canvas>
+    <div id="hero-3d-fallback" aria-hidden="true">
+      <svg viewBox="0 0 400 400" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <clipPath id="fbClip"><circle cx="200" cy="200" r="160"/></clipPath>
+          <radialGradient id="fbFeather" cx="50%" cy="50%" r="50%">
+            <stop offset="72%" stop-color="rgba(0,0,0,0)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,1)"/>
+          </radialGradient>
+          <radialGradient id="fbScanGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="fbBlueTint">
+            <feColorMatrix type="matrix" values="
+              0.6 0.1 0   0 0
+              0   0.9 0.2 0 0
+              0   0.3 1.4 0 0
+              0   0   0   1 0"/>
+          </filter>
+        </defs>
+        <!-- Image 放大到 360 并左移，使瞳孔（在 image 54% 处）落在 viewBox 中心 (200,200) -->
+        <image href="./assets/iris-2.jpg" x="8" y="22" width="360" height="360"
+               clip-path="url(#fbClip)" preserveAspectRatio="xMidYMid slice" filter="url(#fbBlueTint)"/>
+        <circle cx="200" cy="200" r="160" fill="url(#fbFeather)" pointer-events="none"/>
+        <circle cx="200" cy="200" r="160" fill="none" stroke="rgba(255,107,53,0.45)" stroke-width="1.5"/>
+        <rect x="20" y="196" width="360" height="6" fill="url(#fbScanGrad)" class="scan-bar"/>
+      </svg>
+    </div>
+
+    <!-- HUD · 极简追踪标线（无四角括号，让虹膜自然融入背景） -->
+    <div class="hero-hud" aria-hidden="true">
+      <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+        <!-- 主 lock 圆 —— 唯一保留的圆环，紧贴瞳孔，更像"追踪指示"不是"边框" -->
+        <circle class="hud-lock" cx="200" cy="200" r="148" fill="none" stroke="var(--accent)" stroke-width="0.8" stroke-dasharray="6 8" opacity="0.28"/>
+
+        <!-- 两条短 tick 在 lock 圆上的 "3 点 / 9 点" 方向，暗示"锁定中" -->
+        <g class="hud-ticks" stroke="var(--accent)" stroke-width="1" opacity="0.6">
+          <line x1="48" y1="200" x2="62" y2="200"/>
+          <line x1="338" y1="200" x2="352" y2="200"/>
+          <line x1="200" y1="48" x2="200" y2="62"/>
+          <line x1="200" y1="338" x2="200" y2="352"/>
+        </g>
+
+        <!-- 浮动标签：分散在圆周附近，像注释而不是方框角标 -->
+        <g class="hud-labels" font-family="JetBrains Mono, monospace" fill="var(--accent)" font-size="8" letter-spacing="1.8" opacity="0.7">
+          <text x="210" y="42" text-anchor="start">LOCKED</text>
+          <text x="352" y="210">ID-4A7F</text>
+        </g>
+
+        <!-- 频谱线（活体信号 · 底部） -->
+        <g class="hud-spectrum-group">
+          <path class="hud-spectrum" d="M120 360 L320 360" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.7"/>
+          <circle cx="328" cy="360" r="2" fill="var(--accent)" class="hud-live-dot"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="container hero-content">
+      <h1 class="hero-h1">一把长在身体里的钥匙</h1>
+      <p class="hero-h1-en">A Key That Lives Inside You</p>
+
+      <p class="hero-sub" data-reveal>
+        <span class="accent">全球独一无二</span>
+        <span class="hero-sub-divider">·</span>
+        <span>复制不了的那一厘米</span>
+      </p>
+
+      <div class="hero-ctas" data-reveal>
+        <a class="btn btn-primary" href="#scenarios">查看场景方案</a>
+        <a class="btn btn-ghost" href="#tech">了解技术内核</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint" aria-hidden="true">
+      <span class="scroll-label">CONTINUE SCROLL</span>
+      <span class="hero-scroll-line"></span>
+    </div>
+
+    <!-- 固定在右下角的章节计数器（滚动进度） -->
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true">
+      <span class="scroll-progress-num mono"><span id="progNow">01</span><span class="scroll-progress-sep"> / </span><span id="progTotal">08</span></span>
+      <span class="scroll-progress-name mono" id="progName">HERO</span>
+      <span class="scroll-progress-bar"><span class="scroll-progress-bar-fill" id="progBar"></span></span>
+    </div>
+  </section>
+
+  <!-- ───────── 2.5 CERTIFICATION STRIP ───────── -->
+  <section class="cert-strip" aria-label="认证与合规">
+    <div class="container cert-inner">
+      <span class="cert-label">认证 · COMPLIANCE</span>
+      <ul class="cert-list" role="list">
+        <li class="cert-item"><span class="cert-dot"></span>NIST IREX IX</li>
+        <li class="cert-item"><span class="cert-dot"></span>ISO/IEC 19794-6</li>
+        <li class="cert-item"><span class="cert-dot"></span>GB/T 30269</li>
+        <li class="cert-item"><span class="cert-dot"></span>GDPR Ready</li>
+        <li class="cert-item"><span class="cert-dot"></span>等保三级</li>
+        <li class="cert-item"><span class="cert-dot"></span>FIDO2 · WebAuthn</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────── 3. MARQUEE ───────── -->
+  <section class="marquee-section" aria-label="品牌宣言">
+    <div class="marquee">
+      <div class="marquee-track">
+        <span class="marquee-item">THE CENTIMETER THAT CANNOT BE COPIED</span>
+        <span class="marquee-sep">◉</span>
+        <span class="marquee-item mono accent">GLOBALLY UNIQUE · 全球独一无二</span>
+        <span class="marquee-sep">◉</span>
+        <span class="marquee-item">OWNED CORE · FORGED FOR EVERY SCENARIO</span>
+        <span class="marquee-sep">◉</span>
+        <span class="marquee-item">A KEY THAT LIVES INSIDE YOU</span>
+        <span class="marquee-sep">◉</span>
+        <!-- repeat for seamless loop -->
+        <span class="marquee-item">THE CENTIMETER THAT CANNOT BE COPIED</span>
+        <span class="marquee-sep">◉</span>
+        <span class="marquee-item mono accent">GLOBALLY UNIQUE · 全球独一无二</span>
+        <span class="marquee-sep">◉</span>
+        <span class="marquee-item">OWNED CORE · FORGED FOR EVERY SCENARIO</span>
+        <span class="marquee-sep">◉</span>
+        <span class="marquee-item">A KEY THAT LIVES INSIDE YOU</span>
+        <span class="marquee-sep">◉</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 4. STATS ───────── -->
+  <section class="stats-section" id="stats" aria-label="技术参数">
+    <div class="container">
+      <header class="section-header" data-reveal>
+        <span class="eyebrow">为什么是虹膜</span>
+        <h2 class="section-h2">四个数字，就能讲清楚</h2>
+      </header>
+
+      <div class="stats-grid">
+        <article class="stat-card" data-reveal>
+          <div class="stat stat-wordform">全球<br/>独一无二</div>
+          <div class="stat-label">UNIQUENESS · 唯一性</div>
+          <p class="stat-desc">全人类至今没有发现两枚相同的虹膜。你的虹膜只属于你。</p>
+        </article>
+
+        <article class="stat-card" data-reveal>
+          <div class="stat"><span data-count="256">0</span><span class="stat-unit">个</span></div>
+          <div class="stat-label">FEATURES · 特征点</div>
+          <p class="stat-desc">每只虹膜上识别 256 个独立特征。特征越多，越难伪造，越精准认人。</p>
+        </article>
+
+        <article class="stat-card" data-reveal>
+          <div class="stat"><span data-count="256">0</span><span class="stat-unit">字节</span></div>
+          <div class="stat-label">TEMPLATE · 身份模板</div>
+          <p class="stat-desc">一个身份模板只有 256 字节，相当于一条短信的大小，可以离线烧录进任何低功耗芯片。</p>
+        </article>
+
+        <article class="stat-card" data-reveal>
+          <div class="stat"><span data-count="300">0</span><span class="stat-unit">毫秒</span></div>
+          <div class="stat-label">LATENCY · 识别耗时</div>
+          <p class="stat-desc">从凝视到认出你，一次眨眼的时间。比输密码快 10 倍，比刷指纹快 3 倍。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 4.5 COMPARISON MATRIX ───────── -->
+  <section class="compare-section" id="compare" aria-label="生物识别技术对比">
+    <div class="container">
+      <header class="section-header" data-reveal>
+        <span class="eyebrow">为什么是虹膜 · 不是其他</span>
+        <h2 class="section-h2">四种生物识别，摊开来看</h2>
+        <p class="section-sub">每一项指标都用"人话"说清楚。数据来源：NIST IREX IX 国际公开测试（2022）、ISO/IEC 19795 第三方基准。</p>
+      </header>
+
+      <div class="compare-table" role="table" aria-label="生物识别技术对比" data-reveal>
+        <div class="compare-row compare-head" role="row">
+          <div role="columnheader">
+            <span>评估维度</span>
+          </div>
+          <div role="columnheader" class="compare-col-highlight">
+            <span class="compare-col-dot"></span>虹膜
+          </div>
+          <div role="columnheader">指纹</div>
+          <div role="columnheader">面部</div>
+          <div role="columnheader">DNA</div>
+        </div>
+
+        <div class="compare-row" role="row">
+          <div role="cell" class="compare-metric">
+            <span class="compare-metric-label">认错概率</span>
+            <span class="compare-metric-hint">把别人错认成你</span>
+          </div>
+          <div role="cell" class="compare-col-highlight">
+            <span class="compare-dots" data-level="5"></span>
+            <span class="compare-verdict accent">几乎不可能</span>
+          </div>
+          <div role="cell">
+            <span class="compare-dots" data-level="3"></span>
+            <span class="compare-verdict">中</span>
+          </div>
+          <div role="cell">
+            <span class="compare-dots" data-level="2"></span>
+            <span class="compare-verdict">较高</span>
+          </div>
+          <div role="cell">
+            <span class="compare-dots" data-level="5"></span>
+            <span class="compare-verdict">几乎不可能</span>
+          </div>
+        </div>
+
+        <div class="compare-row" role="row">
+          <div role="cell" class="compare-metric">
+            <span class="compare-metric-label">身份档案大小</span>
+            <span class="compare-metric-hint">存一个人要多大</span>
+          </div>
+          <div role="cell" class="compare-col-highlight">
+            <span class="accent">256 字节</span>
+            <span class="compare-verdict-hint">一条短信</span>
+          </div>
+          <div role="cell">
+            <span>约 64 字节</span>
+            <span class="compare-verdict-hint">半条短信</span>
+          </div>
+          <div role="cell">
+            <span>约 40 字节</span>
+            <span class="compare-verdict-hint">几个词</span>
+          </div>
+          <div role="cell">
+            <span>数兆字节</span>
+            <span class="compare-verdict-hint">一张照片大</span>
+          </div>
+        </div>
+
+        <div class="compare-row" role="row">
+          <div role="cell" class="compare-metric">
+            <span class="compare-metric-label">采集方式</span>
+            <span class="compare-metric-hint">用户要配合到什么程度</span>
+          </div>
+          <div role="cell" class="compare-col-highlight">
+            <span class="accent">两米外 凝视</span>
+            <span class="compare-verdict-hint">无接触</span>
+          </div>
+          <div role="cell">
+            <span>按压</span>
+            <span class="compare-verdict-hint">需接触</span>
+          </div>
+          <div role="cell">
+            <span>面向摄像头</span>
+            <span class="compare-verdict-hint">需照明</span>
+          </div>
+          <div role="cell">
+            <span>采血 / 毛发</span>
+            <span class="compare-verdict-hint">需送检</span>
+          </div>
+        </div>
+
+        <div class="compare-row" role="row">
+          <div role="cell" class="compare-metric">
+            <span class="compare-metric-label">识别速度</span>
+            <span class="compare-metric-hint">从面对设备到放行</span>
+          </div>
+          <div role="cell" class="compare-col-highlight">
+            <span class="accent">眨一眼</span>
+            <span class="compare-verdict-hint">~ 0.3 秒</span>
+          </div>
+          <div role="cell">
+            <span>按住等</span>
+            <span class="compare-verdict-hint">~ 1.5 秒</span>
+          </div>
+          <div role="cell">
+            <span>对准等</span>
+            <span class="compare-verdict-hint">~ 0.8 秒</span>
+          </div>
+          <div role="cell">
+            <span>第二天</span>
+            <span class="compare-verdict-hint">24 小时 +</span>
+          </div>
+        </div>
+
+        <div class="compare-row" role="row">
+          <div role="cell" class="compare-metric">
+            <span class="compare-metric-label">防伪能力</span>
+            <span class="compare-metric-hint">照片 / 面罩 / 假指纹</span>
+          </div>
+          <div role="cell" class="compare-col-highlight">
+            <span class="compare-dots" data-level="5"></span>
+            <span class="compare-verdict accent">活体识别 · 极强</span>
+          </div>
+          <div role="cell">
+            <span class="compare-dots" data-level="3"></span>
+            <span class="compare-verdict">一般</span>
+          </div>
+          <div role="cell">
+            <span class="compare-dots" data-level="2"></span>
+            <span class="compare-verdict">偏弱</span>
+          </div>
+          <div role="cell">
+            <span class="compare-dots" data-level="5"></span>
+            <span class="compare-verdict">极强</span>
+          </div>
+        </div>
+
+        <div class="compare-row" role="row">
+          <div role="cell" class="compare-metric">
+            <span class="compare-metric-label">终身稳定性</span>
+            <span class="compare-metric-hint">从 1 岁到百岁会不会变</span>
+          </div>
+          <div role="cell" class="compare-col-highlight">
+            <span class="compare-dots" data-level="5"></span>
+            <span class="compare-verdict accent">几乎不变</span>
+          </div>
+          <div role="cell">
+            <span class="compare-dots" data-level="3"></span>
+            <span class="compare-verdict">会磨损</span>
+          </div>
+          <div role="cell">
+            <span class="compare-dots" data-level="2"></span>
+            <span class="compare-verdict">随年龄变</span>
+          </div>
+          <div role="cell">
+            <span class="compare-dots" data-level="5"></span>
+            <span class="compare-verdict">永不变</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="compare-footnote" data-reveal>
+        <span class="accent">※</span> 数据取自 NIST IREX IX Report（2022）与 ISO/IEC 19795 第三方独立测试中位值。在「又快、又准、又无接触」三项上，虹膜是目前唯一全优的方案。
+      </p>
+    </div>
+  </section>
+
+  <!-- ───────── 5. BENTO SCENARIOS ───────── -->
+  <section class="scenarios-section" id="scenarios" aria-label="场景方案">
+    <div class="container">
+      <header class="section-header" data-reveal>
+        <span class="eyebrow">一套内核 · 千种场景</span>
+        <h2 class="section-h2">每一个落地场景，都独立设计</h2>
+        <p class="section-sub">我们拥有核心源代码，不做同质化硬件盒子。每一个场景，我们都会重新设计光路、外壳、算法阈值与接入方式。</p>
+      </header>
+
+      <div class="bento-scenarios" data-reveal>
+        <article class="card bento-main" tabindex="0" aria-labelledby="s-gov-title">
+          <!-- 真实虹膜细节 · 右侧延伸背景 -->
+          <div class="bento-main-photo" aria-hidden="true">
+            <img src="./assets/iris-2.jpg" alt="" loading="lazy" class="bento-main-iris-img"/>
+            <div class="bento-main-overlay"></div>
+            <!-- 顶部小标签 · 照片上可读、不压瞳孔 -->
+            <div class="bento-photo-tag">
+              <span class="mono">LIVENESS · OK</span>
+              <span class="mono accent">256 PTS</span>
+            </div>
+          </div>
+
+          <!-- 内容层 -->
+          <div class="bento-main-content">
+            <span class="bento-tag">政企 · 安防</span>
+            <h3 id="s-gov-title" class="bento-title">关键基础设施的最后一道门</h3>
+            <p class="bento-desc">机房、数据中心、指挥中枢——在所有物理门禁之前，放一双看得见的眼睛。活体检测、防翻拍、防面罩，比密码卡更可信。</p>
+            <ul class="bento-tech">
+              <li>活体检测（红外 + 3D 结构光）</li>
+              <li>双眼双重验证</li>
+              <li>断网离线模式</li>
+              <li>支持 GB/T 30269 合规</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" tabindex="0" aria-labelledby="s-fin-title">
+          <span class="bento-tag">金融 · 风控</span>
+          <h3 id="s-fin-title" class="bento-title">大额支付的最后一道确认</h3>
+          <p class="bento-desc">替代短信 + 密码双因子，虹膜即最终签名。</p>
+          <div class="bento-illus bento-illus-fin" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="60" cy="60" r="50"/><path d="M30 60 L55 80 L90 40" stroke-width="2"/></g></svg>
+          </div>
+        </article>
+
+        <article class="card" tabindex="0" aria-labelledby="s-med-title">
+          <span class="bento-tag">医疗 · 身份</span>
+          <h3 id="s-med-title" class="bento-title">病历与处方的可信锁</h3>
+          <p class="bento-desc">无接触、可戴口罩识别，适配所有卫生场所。</p>
+          <div class="bento-illus bento-illus-med" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="60" cy="60" r="30"/><rect x="52" y="36" width="16" height="48"/><rect x="36" y="52" width="48" height="16"/></g></svg>
+          </div>
+        </article>
+
+        <article class="card" tabindex="0" aria-labelledby="s-iot-title">
+          <span class="bento-tag">消费 · IoT</span>
+          <h3 id="s-iot-title" class="bento-title">嵌入式模组 · 从门锁到车钥匙</h3>
+          <p class="bento-desc">身份档案只有 <strong>256 字节</strong>（一条短信大小），可离线烧录在低功耗芯片，嵌入任何设备。</p>
+          <div class="bento-illus bento-illus-iot" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><g stroke="currentColor" fill="none" stroke-width="1"><rect x="30" y="30" width="60" height="60"/><rect x="40" y="40" width="40" height="40" fill="currentColor" fill-opacity="0.15"/><line x1="20" y1="50" x2="30" y2="50"/><line x1="20" y1="70" x2="30" y2="70"/><line x1="90" y1="50" x2="100" y2="50"/><line x1="90" y1="70" x2="100" y2="70"/><line x1="50" y1="20" x2="50" y2="30"/><line x1="70" y1="20" x2="70" y2="30"/><line x1="50" y1="90" x2="50" y2="100"/><line x1="70" y1="90" x2="70" y2="100"/></g></svg>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 5.4 CASE GALLERY ───────── -->
+  <section class="cases-section" id="cases" aria-label="部署案例">
+    <div class="container">
+      <header class="section-header" data-reveal>
+        <span class="eyebrow">真实部署 · 在用中</span>
+        <h2 class="section-h2">四种已经在跑的场景</h2>
+        <p class="section-sub">不是 demo。以下每一个场景都有真实客户在用，从算法阈值到外壳形态，都是我们独立开发交付的。</p>
+      </header>
+
+      <div class="cases-grid" data-reveal>
+        <!-- Case 01: 安防 -->
+        <article class="case-card" tabindex="0" aria-labelledby="case-01-title">
+          <div class="case-photo" style="background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1400&q=85&auto=format&fit=crop');"></div>
+          <div class="case-overlay"></div>
+          <div class="case-content">
+            <div class="case-head">
+              <span class="case-num mono">01</span>
+              <span class="case-tag">安防 · Security</span>
+            </div>
+            <h3 id="case-01-title" class="case-title">数据中心 · 关键机房</h3>
+            <p class="case-desc">替代门禁卡和指纹机。双眼活体识别，照片、面罩、睡眠状态一律拒绝。</p>
+            <dl class="case-stats">
+              <div><dt>日均通行</dt><dd class="mono accent">3 万 +</dd></div>
+              <div><dt>识别精度</dt><dd class="mono accent">99.998%</dd></div>
+              <div><dt>单次耗时</dt><dd class="mono">0.3 秒</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- Case 02: 门禁 -->
+        <article class="case-card" tabindex="0" aria-labelledby="case-02-title">
+          <div class="case-photo" style="background-image: url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1400&q=85&auto=format&fit=crop');"></div>
+          <div class="case-overlay"></div>
+          <div class="case-content">
+            <div class="case-head">
+              <span class="case-num mono">02</span>
+              <span class="case-tag">门禁 · Access</span>
+            </div>
+            <h3 id="case-02-title" class="case-title">智能楼宇 · 写字楼门禁</h3>
+            <p class="case-desc">两米外凝视即开门，手上拎着咖啡也能通行。无需掏卡、无需摘口罩。</p>
+            <dl class="case-stats">
+              <div><dt>识别距离</dt><dd class="mono accent">2 米</dd></div>
+              <div><dt>戴口罩支持</dt><dd class="mono accent">✓</dd></div>
+              <div><dt>离线模式</dt><dd class="mono">断网可用</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- Case 03: 隐私安全 -->
+        <article class="case-card" tabindex="0" aria-labelledby="case-03-title">
+          <div class="case-photo" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1400&q=85&auto=format&fit=crop');"></div>
+          <div class="case-overlay"></div>
+          <div class="case-content">
+            <div class="case-head">
+              <span class="case-num mono">03</span>
+              <span class="case-tag">隐私 · Privacy</span>
+            </div>
+            <h3 id="case-03-title" class="case-title">敏感档案 · 本地解锁</h3>
+            <p class="case-desc">虹膜模板本地存储，不上云、不联网。即便设备丢失，也带不走你的身份。</p>
+            <dl class="case-stats">
+              <div><dt>模板大小</dt><dd class="mono accent">256 字节</dd></div>
+              <div><dt>存储位置</dt><dd class="mono">本地芯片</dd></div>
+              <div><dt>数据流向</dt><dd class="mono accent">零外传</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- Case 04: 冷钱包 -->
+        <article class="case-card" tabindex="0" aria-labelledby="case-04-title">
+          <div class="case-photo" style="background-image: url('https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1400&q=85&auto=format&fit=crop');"></div>
+          <div class="case-overlay"></div>
+          <div class="case-content">
+            <div class="case-head">
+              <span class="case-num mono">04</span>
+              <span class="case-tag">加密 · Cold Wallet</span>
+            </div>
+            <h3 id="case-04-title" class="case-title">冷钱包 · 加密资产签名</h3>
+            <p class="case-desc">助记词不再靠记忆 / 纸条 / 金属牌。你的虹膜就是你的私钥 —— 不会遗失、不会被偷、不会被逼问。</p>
+            <dl class="case-stats">
+              <div><dt>助记词</dt><dd class="mono accent">无需</dd></div>
+              <div><dt>签名方式</dt><dd class="mono">凝视 + 活体</dd></div>
+              <div><dt>备份方案</dt><dd class="mono accent">虹膜本身</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+
+      <p class="cases-footnote" data-reveal>
+        <span class="accent">※</span> 案例基于实际客户部署匿名化呈现。数字取项目结案报告中位值，不代表所有部署的绝对上下界。
+      </p>
+    </div>
+  </section>
+
+  <!-- ───────── 5.5 STATEMENT ───────── -->
+  <section class="statement-section" aria-label="设计宣言">
+    <div class="container statement-inner">
+      <div class="statement-meta" data-reveal>
+        <span class="statement-meta-label mono">IRIS TEMPLATE · 身份档案</span>
+        <span class="statement-meta-value mono accent">256 字节</span>
+      </div>
+
+      <h2 class="statement-big" data-reveal>
+        <span class="statement-big-line">一条短信的大小，</span>
+        <span class="statement-big-line">就足以构成一个</span>
+        <span class="statement-big-line accent-text">不可复制的你。</span>
+      </h2>
+
+      <p class="statement-en" data-reveal>
+        256 bytes. One unrepeatable identity.<br/>
+        <span class="statement-en-hint">Small enough to embed in a chip. Unique enough to be only you.</span>
+      </p>
+
+      <div class="statement-footnote" data-reveal>
+        <div class="statement-footnote-row">
+          <span class="statement-footnote-label mono">档案大小</span>
+          <span class="statement-footnote-val accent">256 字节</span>
+          <span class="statement-footnote-hint">一条短信</span>
+        </div>
+        <div class="statement-footnote-row">
+          <span class="statement-footnote-label mono">存储方式</span>
+          <span class="statement-footnote-val">可离线烧录</span>
+          <span class="statement-footnote-hint">嵌入任何芯片</span>
+        </div>
+        <div class="statement-footnote-row">
+          <span class="statement-footnote-label mono">唯一性</span>
+          <span class="statement-footnote-val accent">全球独一无二</span>
+          <span class="statement-footnote-hint">你的虹膜只属于你</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 6. TECH PIN-SCRUB ───────── -->
+  <section class="tech-section" id="tech" aria-label="技术原理">
+    <div id="tech-pin" class="tech-pin">
+      <div class="container tech-pin-inner">
+
+        <aside class="tech-copy">
+          <span class="eyebrow">HUIHONG ENGINE · 自主可控</span>
+          <h2 class="section-h2">三步，就把你认出来</h2>
+          <p class="tech-step" data-step="1">
+            <span class="tech-step-num mono accent">01</span>
+            <span class="tech-step-title">看一眼 · 采集虹膜</span>
+            <span class="tech-step-desc">用近红外光 + 可见光两种角度拍下虹膜，同时判断"是不是活人"——照片、面罩、义眼一律拒绝。约 100 毫秒完成。</span>
+          </p>
+          <p class="tech-step" data-step="2">
+            <span class="tech-step-num mono accent">02</span>
+            <span class="tech-step-title">提取特征 · 编成档案</span>
+            <span class="tech-step-desc">从虹膜纹理里抓出 256 个独特特征点，打包成一个只有 <strong>256 字节</strong>（一条短信大小）的身份档案。</span>
+          </p>
+          <p class="tech-step" data-step="3">
+            <span class="tech-step-num mono accent">03</span>
+            <span class="tech-step-title">现场比对 · 认出你</span>
+            <span class="tech-step-desc">档案和本地库里已有的身份逐个比对，找出最接近的那个。全程不联网、不上云，<strong>0.3 秒</strong>返回结果。</span>
+          </p>
+        </aside>
+
+        <figure class="tech-iris" aria-hidden="true">
+          <svg viewBox="0 0 400 400" class="tech-iris-svg">
+            <defs>
+              <clipPath id="irisClip"><circle cx="200" cy="200" r="150"/></clipPath>
+              <radialGradient id="irisFeather" cx="50%" cy="50%" r="50%">
+                <stop offset="72%" stop-color="rgba(0,0,0,0)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,1)"/>
+              </radialGradient>
+              <radialGradient id="scanGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+              </radialGradient>
+              <!-- 蓝光偏色（CAPTURE）-->
+              <filter id="techBlueTint">
+                <feColorMatrix type="matrix" values="
+                  0.5 0   0   0 0
+                  0   0.85 0.1 0 0
+                  0   0.2 1.5 0 0
+                  0   0   0   1 0"/>
+              </filter>
+              <!-- 去饱和（ENCODE）-->
+              <filter id="techDesat"><feColorMatrix type="saturate" values="0.18"/></filter>
+              <!-- 极暗（MATCH）-->
+              <filter id="techDim">
+                <feColorMatrix type="matrix" values="
+                  0.18 0   0   0 0
+                  0    0.20 0   0 0
+                  0    0   0.25 0 0
+                  0    0   0   1 0"/>
+              </filter>
+            </defs>
+
+            <!-- Layer 1: Capture — 原色虹膜 + 扫描条 -->
+            <g id="iris-layer-1" class="iris-layer">
+              <image href="./assets/iris-2.jpg" x="50" y="50" width="300" height="300"
+                     clip-path="url(#irisClip)" preserveAspectRatio="xMidYMid slice" filter="url(#techBlueTint)"/>
+              <circle cx="200" cy="200" r="150" fill="url(#irisFeather)"/>
+              <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(255,107,53,0.45)" stroke-width="1.5"/>
+              <rect x="20" y="196" width="360" height="8" fill="url(#scanGrad)" class="scan-bar"/>
+              <text x="200" y="378" text-anchor="middle" class="iris-caption">看一眼 · 采集虹膜</text>
+            </g>
+
+            <!-- Layer 2: Encode — 去饱和虹膜 + 256 特征点 -->
+            <g id="iris-layer-2" class="iris-layer">
+              <image href="./assets/iris-2.jpg" x="50" y="50" width="300" height="300"
+                     clip-path="url(#irisClip)" preserveAspectRatio="xMidYMid slice" filter="url(#techDesat)"/>
+              <circle cx="200" cy="200" r="150" fill="url(#irisFeather)"/>
+              <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(255,107,53,0.3)" stroke-width="1"/>
+              <circle cx="200" cy="200" r="100" fill="none" stroke="rgba(255,107,53,0.25)" stroke-width="1" stroke-dasharray="2 4"/>
+              <g class="feature-points" fill="rgba(255,107,53,0.95)"></g>
+              <text x="200" y="378" text-anchor="middle" class="iris-caption">提取特征 · 256 个特征点</text>
+            </g>
+
+            <!-- Layer 3: Match — 深暗虹膜 + 2048 bit 二进制模板 -->
+            <g id="iris-layer-3" class="iris-layer">
+              <image href="./assets/iris-2.jpg" x="50" y="50" width="300" height="300"
+                     clip-path="url(#irisClip)" preserveAspectRatio="xMidYMid slice" filter="url(#techDim)"/>
+              <circle cx="200" cy="200" r="150" fill="url(#irisFeather)"/>
+              <g class="binary-grid" font-family="JetBrains Mono, monospace" font-size="9" fill="rgba(255,107,53,0.75)"></g>
+              <circle cx="200" cy="200" r="60" fill="none" stroke="rgba(255,107,53,0.9)" stroke-width="2"/>
+              <text x="200" y="378" text-anchor="middle" class="iris-caption">现场比对 · 256 字节档案</text>
+            </g>
+          </svg>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 7. ABOUT · CONTACT · FOOTER ───────── -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <header class="section-header" data-reveal>
+        <span class="eyebrow">关于我们</span>
+        <h2 class="section-h2">核心自主，定制落地</h2>
+      </header>
+      <div class="about-grid">
+        <div class="about-copy" data-reveal>
+          <p>我们是一家拥有完整虹膜识别核心源代码的技术公司。</p>
+          <p>我们不卖通用硬件——从光路、外壳到算法阈值，每个场景我们都重新做一遍。</p>
+          <p>这意味着：你遇到的每一个特殊需求（强光、佩戴、距离、合规），我们都能在内核层改写，而不是用配置文件兜底。</p>
+        </div>
+        <dl class="about-meta" data-reveal>
+          <div><dt>成立</dt><dd>2016</dd></div>
+          <div><dt>核心</dt><dd>源代码自主</dd></div>
+          <div><dt>模式</dt><dd>按场景定制</dd></div>
+          <div><dt>总部</dt><dd>深圳 · 深港数智智谷</dd></div>
+        </dl>
+      </div>
+
+      <!-- 里程碑 · 4 段 -->
+      <ol class="about-timeline" data-reveal>
+        <li class="about-timeline-item">
+          <div class="about-timeline-year mono accent">2016</div>
+          <div class="about-timeline-title">团队组建</div>
+          <div class="about-timeline-desc">首版虹膜识别核心算法通过内部评测，误识率进入百万分之一档。</div>
+        </li>
+        <li class="about-timeline-item">
+          <div class="about-timeline-year mono accent">2019</div>
+          <div class="about-timeline-title">首个政企项目落地</div>
+          <div class="about-timeline-desc">为大型数据中心门禁定制第一套场景化模组，支持断网离线、活体检测。</div>
+        </li>
+        <li class="about-timeline-item">
+          <div class="about-timeline-year mono accent">2022</div>
+          <div class="about-timeline-title">通过国际基准</div>
+          <div class="about-timeline-desc">算法提交 NIST IREX IX 国际公开评测，精度指标进入第一梯队。</div>
+        </li>
+        <li class="about-timeline-item">
+          <div class="about-timeline-year mono accent">今天</div>
+          <div class="about-timeline-title">面向更多场景</div>
+          <div class="about-timeline-desc">从门禁到支付、医疗到车载，持续把同一套核心适配进新的业务形态。</div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="contact-section" id="contact">
+    <div class="container contact-inner" data-reveal>
+      <span class="eyebrow">开始合作</span>
+      <h2 class="section-h2 contact-title">告诉我们你的场景<br>我们帮你把方案落下去</h2>
+
+      <div class="contact-ctas">
+        <a class="btn btn-primary" href="mailto:hello@huihong.tech">
+          发起合作咨询
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 7h12m-5-5l5 5-5 5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="tel:+86-000-0000-0000">电话沟通</a>
+      </div>
+
+      <dl class="contact-grid">
+        <div class="contact-item">
+          <dt>邮箱</dt>
+          <dd><a href="mailto:hello@huihong.tech">hello@huihong.tech</a></dd>
+        </div>
+        <div class="contact-item">
+          <dt>电话</dt>
+          <dd><a href="tel:+86-000-0000-0000">+86 000 0000 0000</a></dd>
+          <span class="contact-hint mono">工作日 9:00 – 18:00</span>
+        </div>
+        <div class="contact-item">
+          <dt>办公地</dt>
+          <dd>深圳 · 深港数智智谷</dd>
+          <span class="contact-hint mono">接受实地 Demo 预约</span>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-col footer-col-brand">
+        <div class="footer-brand">
+          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+            <circle cx="11" cy="11" r="10" fill="none" stroke="currentColor" stroke-width="1"/>
+            <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1"/>
+            <circle cx="11" cy="11" r="2.5" fill="currentColor"/>
+          </svg>
+          <div class="footer-brand-text">
+            <span class="footer-brand-cn">汇虹数智科技</span>
+            <span class="footer-brand-en mono">HUIHONG · A Key That Lives Inside You</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">产品</h4>
+        <ul>
+          <li><a href="#scenarios">落地场景</a></li>
+          <li><a href="#compare">生物识别对比</a></li>
+          <li><a href="#tech">技术原理</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">公司</h4>
+        <ul>
+          <li><a href="#about">关于我们</a></li>
+          <li><a href="#contact">联系合作</a></li>
+          <li><a href="mailto:hello@huihong.tech">hello@huihong.tech</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">合规</h4>
+        <ul class="mono footer-col-mono">
+          <li>NIST IREX IX</li>
+          <li>ISO/IEC 19794-6</li>
+          <li>GB/T 30269</li>
+          <li>等保三级 · GDPR</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <span class="mono"><span id="year"></span> · 汇虹数智科技 · 保留所有权利</span>
+      <span class="mono footer-bottom-slogan">你的虹膜，只属于你</span>
+    </div>
+  </footer>
+
+  <!-- GSAP via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Three.js via importmap -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
