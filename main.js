@@ -473,10 +473,293 @@ function renderIris() {
 // ═══════════════════════════════════════════════════════════
 //  3. GSAP · Scroll Reveal · Counters · Pin · Marquee
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  自定义光标（双圈 · ring 缓追 dot · 状态机）
+// ═══════════════════════════════════════════════════════════
+function initCursor() {
+  const cursor = $('.cursor');
+  const dot = $('.cursor-dot');
+  const ring = $('.cursor-ring');
+  if (!cursor || !dot || !ring) return;
+  // 触屏不开启
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    cursor.style.display = 'none';
+    return;
+  }
+
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let rx = mx, ry = my;
+  let visible = false;
+
+  document.addEventListener('mousemove', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+    if (!visible) {
+      visible = true;
+      cursor.style.opacity = '1';
+    }
+    // dot 立即跟随
+    dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
+  }, { passive: true });
+
+  document.addEventListener('mouseleave', () => {
+    visible = false;
+    cursor.style.opacity = '0';
+  });
+
+  // ring 用 lerp 缓追
+  const tick = () => {
+    rx += (mx - rx) * 0.18;
+    ry += (my - ry) * 0.18;
+    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+
+  // 状态切换：hover 在文字 → is-text，hover 在交互元素 → is-interactive
+  const setState = (state) => {
+    cursor.classList.remove('is-text', 'is-interactive');
+    if (state) cursor.classList.add(state);
+  };
+
+  const interactive = 'a, button, .btn, [role="button"], .case-card, .bento-main, .compare-row';
+  const textish = 'h1, h2, h3, p, li, dd, dt, span, .hero-h1';
+
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest(interactive)) {
+      setState('is-interactive');
+    } else if (e.target.closest(textish)) {
+      setState('is-text');
+    } else {
+      setState(null);
+    }
+  });
+
+  cursor.style.opacity = '0';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Magnetic 按钮（鼠标在范围内吸附）
+// ═══════════════════════════════════════════════════════════
+function initMagneticButtons() {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const buttons = $$('.btn, .nav-cta');
+  buttons.forEach((btn) => {
+    const strength = 0.35;          // 吸附强度（0-1）
+    const radius = 80;              // 触发半径（px）
+    let raf = null;
+
+    const onMove = (e) => {
+      const r = btn.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist > radius) return;
+      const fall = 1 - dist / radius;     // 越近越强
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        btn.style.transform = `translate(${dx * strength * fall}px, ${dy * strength * fall}px)`;
+      });
+    };
+
+    const onLeave = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        btn.style.transition = 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)';
+        btn.style.transform = '';
+        setTimeout(() => { btn.style.transition = ''; }, 500);
+      });
+    };
+
+    // 监听更大范围（按钮 + 周围 80px）
+    document.addEventListener('mousemove', onMove);
+    btn.addEventListener('mouseleave', onLeave);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  字符级 Reveal — section H2 / hero-h1 · 滚动触发 clip-path 揭示
+// ═══════════════════════════════════════════════════════════
+function initCharReveal() {
+  if (prefersReducedMotion) return;
+  // 收集所有 H2 + hero-h1 + statement-big
+  const targets = $$('.section-h2, .statement-big, .hero-h1');
+  if (!targets.length) return;
+
+  // 把每个目标包装成 char-reveal 容器
+  targets.forEach((el) => {
+    if (el.classList.contains('char-reveal')) return;
+    if (el.classList.contains('hero-h1')) return; // hero-h1 已有 splitHeroH1 单独处理
+    // 处理顶层文本节点 + 已有的 inline span（保留嵌套结构）
+    const text = el.textContent;
+    if (!text || !text.trim()) return;
+    const chars = [...text];
+    el.textContent = '';
+    el.classList.add('char-reveal', 'pending');
+    chars.forEach((c) => {
+      const span = document.createElement('span');
+      span.className = 'char';
+      span.textContent = c === ' ' ? ' ' : c;
+      el.appendChild(span);
+    });
+  });
+
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  $$('.char-reveal.pending').forEach((el) => {
+    const chars = el.querySelectorAll('.char');
+    if (!chars.length) return;
+    gsap.to(chars, {
+      clipPath: 'inset(0% 0 0 0)',
+      yPercent: 0,
+      opacity: 1,
+      stagger: 0.025,
+      duration: 0.9,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => el.classList.remove('pending'),
+      },
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  数字 Scramble — stat 数字进入视口时"乱码 → 锁定"
+// ═══════════════════════════════════════════════════════════
+function initNumberScramble() {
+  if (prefersReducedMotion) return;
+  const els = $$('[data-count]');
+  if (!els.length) return;
+
+  const chars = '0123456789ABCDEF#@%$';
+  const randChar = () => chars[Math.floor(Math.random() * chars.length)];
+
+  els.forEach((el) => {
+    const target = parseFloat(el.dataset.count);
+    if (isNaN(target)) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        runScramble(el, target);
+      });
+    }, { threshold: 0.6 });
+    observer.observe(el);
+  });
+
+  function runScramble(el, target) {
+    const targetStr = Math.floor(target).toLocaleString();
+    const totalDuration = 900;
+    const scrambleDuration = 500;
+    const start = performance.now();
+
+    const tick = (now) => {
+      const elapsed = now - start;
+      if (elapsed < scrambleDuration) {
+        // Scramble 阶段：乱码
+        let s = '';
+        for (let i = 0; i < targetStr.length; i++) {
+          s += /[\d]/.test(targetStr[i]) ? randChar() : targetStr[i];
+        }
+        el.textContent = s;
+        requestAnimationFrame(tick);
+      } else if (elapsed < totalDuration) {
+        // Reveal 阶段：从左到右逐个锁定
+        const lockProgress = (elapsed - scrambleDuration) / (totalDuration - scrambleDuration);
+        const lockUntil = Math.floor(targetStr.length * lockProgress);
+        let s = '';
+        for (let i = 0; i < targetStr.length; i++) {
+          if (i < lockUntil) s += targetStr[i];
+          else s += /[\d]/.test(targetStr[i]) ? randChar() : targetStr[i];
+        }
+        el.textContent = s;
+        requestAnimationFrame(tick);
+      } else {
+        el.textContent = targetStr;
+      }
+    };
+    requestAnimationFrame(tick);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Outline → Fill 标题（杂志封面感）
+//  · 默认是空心字，滚动进入视口后 0.5s delay 平滑填实
+// ═══════════════════════════════════════════════════════════
+function initOutlineFill() {
+  if (prefersReducedMotion) return;
+  // 给所有 H2（除 hero）+ statement-big 应用 outline-fill 入场
+  const targets = $$('.section-h2:not(.hero-h1), .statement-big');
+  targets.forEach((el) => {
+    el.classList.add('outline-fill', 'is-outline');
+  });
+
+  if (!('IntersectionObserver' in window)) {
+    // 降级：直接显示
+    targets.forEach((el) => el.classList.remove('is-outline'));
+    return;
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      io.unobserve(entry.target);
+      // 0.5s delay 让 char-reveal 先开始
+      setTimeout(() => {
+        entry.target.classList.remove('is-outline');
+      }, 500);
+    });
+  }, { threshold: 0.4 });
+
+  targets.forEach((el) => io.observe(el));
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Lenis 平滑滚动 + GSAP 共用 ticker
+// ═══════════════════════════════════════════════════════════
+let lenisInstance = null;
+function initLenis() {
+  if (!window.Lenis || prefersReducedMotion) return;
+  lenisInstance = new Lenis({
+    duration: 1.1,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    wheelMultiplier: 1.0,
+    touchMultiplier: 1.5,
+  });
+  // 给 anchor 链接（#xxx）使用 lenis 平滑跳转
+  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      if (id.length <= 1) return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      lenisInstance.scrollTo(target, { offset: -64, duration: 1.4 });
+    });
+  });
+  // ScrollTrigger 同步
+  if (window.ScrollTrigger) {
+    lenisInstance.on('scroll', ScrollTrigger.update);
+  }
+}
+
 function initGsap() {
   if (!window.gsap) return;
   if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
   gsap.defaults({ ease: 'power3.out', duration: 1.0 });
+
+  // GSAP 主导 rAF · Lenis 跟随 GSAP 时钟
+  if (lenisInstance) {
+    gsap.ticker.add((time) => lenisInstance.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
 
   // ── Generic reveal (non-hero) —— 用 gsap.from 渐进增强，CSS 默认可见
   if (!document.hidden) {
@@ -489,24 +772,7 @@ function initGsap() {
     });
   }
 
-  // ── 数字 counter
-  $$('[data-count]').forEach((el) => {
-    const target = parseFloat(el.dataset.count);
-    if (isNaN(target)) return;
-    const obj = { v: 0 };
-    gsap.to(obj, {
-      v: target,
-      duration: 2.0,
-      ease: 'power2.out',
-      scrollTrigger: { trigger: el, start: 'top 85%', once: true },
-      onUpdate() {
-        el.textContent = Math.floor(obj.v).toLocaleString();
-      },
-      onComplete() {
-        el.textContent = Math.floor(target).toLocaleString();
-      },
-    });
-  });
+  // ── 数字 counter 已被 initNumberScramble 接管（更"贵"的乱码→锁定效果）
 
   // ── Marquee 横滚
   if (!prefersReducedMotion) {
@@ -793,22 +1059,26 @@ function safeRun(name, fn) {
 }
 
 function boot() {
+  safeRun('initLenis', initLenis);     // 必须先于 GSAP，让 ScrollTrigger 用 lenis scroll 事件同步
   safeRun('splitHeroH1', splitHeroH1);
   safeRun('drawFeaturePoints', drawFeaturePoints);
   safeRun('drawBinaryGrid', drawBinaryGrid);
   safeRun('initNav', initNav);
   safeRun('initYear', initYear);
   safeRun('initSpotlightCards', initSpotlightCards);
+  safeRun('initCursor', initCursor);
+  safeRun('initMagneticButtons', initMagneticButtons);
   safeRun('initIrisScene', initIrisScene);
   safeRun('initHudSpectrum', initHudSpectrum);
   safeRun('initScrollProgress', initScrollProgress);
+  safeRun('initCharReveal', initCharReveal);
+  safeRun('initNumberScramble', initNumberScramble);
+  safeRun('initOutlineFill', initOutlineFill);
 
   // GSAP 在模块执行前已由 CDN 同步加载，因此通常立即可用
   const runGsap = () => {
     if (!window.gsap) { setTimeout(runGsap, 80); return; }
-    // Hero entrance 先跑（第一屏最重要，不能被 ScrollTrigger 拖累）
     safeRun('animateHeroEntrance', animateHeroEntrance);
-    // ScrollTrigger 相关后跑
     safeRun('initGsap', initGsap);
   };
   runGsap();

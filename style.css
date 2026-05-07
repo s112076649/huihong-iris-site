@@ -55,7 +55,13 @@
 
 /* ─────────── Reset ─────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* 原生 smooth scroll 关闭——Lenis 接管 */
+html { -webkit-text-size-adjust: 100%; }
+html.lenis { height: auto; }
+html.lenis body { overflow-x: hidden; }
+html.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+html.lenis-stopped { overflow: hidden; }
+html.lenis-scrolling iframe { pointer-events: none; }
 body {
   font-family: var(--font-body);
   font-size: 16px;
@@ -181,6 +187,67 @@ h1, h2, h3, h4 {
   border-color: var(--accent);
   color: var(--accent);
   background: rgba(var(--accent-rgb), 0.04);
+}
+
+/* ─────────── 自定义光标（仅真鼠标设备）─────────── */
+@media (hover: hover) and (pointer: fine) {
+  .cursor {
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    will-change: transform;
+  }
+  .cursor-dot,
+  .cursor-ring {
+    position: absolute;
+    top: 0; left: 0;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: width 0.25s var(--ease-out),
+                height 0.25s var(--ease-out),
+                background 0.25s var(--ease-out),
+                border-color 0.25s var(--ease-out);
+  }
+  .cursor-dot {
+    width: 6px; height: 6px;
+    background: #FFFFFF;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    background: transparent;
+  }
+  /* 状态：hover 在文字时 → ring 拉长成竖线 */
+  .cursor.is-text .cursor-dot { opacity: 0; }
+  .cursor.is-text .cursor-ring {
+    width: 2px;
+    height: 28px;
+    border-radius: 1px;
+    background: #FFFFFF;
+    border-color: transparent;
+  }
+  /* 状态：hover 在交互元素 → ring 膨胀，dot 微调 */
+  .cursor.is-interactive .cursor-dot {
+    width: 4px; height: 4px;
+  }
+  .cursor.is-interactive .cursor-ring {
+    width: 56px; height: 56px;
+    border-color: rgba(255, 255, 255, 0.85);
+  }
+  /* 隐藏原生光标 */
+  body { cursor: none; }
+  a, button, .btn, .card, [role="button"], [tabindex] { cursor: none; }
+}
+
+/* Magnetic 按钮：CSS 部分（JS 设置 transform） */
+.btn,
+.nav-cta,
+.case-card,
+.bento-main {
+  will-change: transform;
 }
 
 /* ─────────── Grain 氛围层 ─────────── */
@@ -1709,6 +1776,35 @@ h1, h2, h3, h4 {
 ═══════════════════════════════════════════════════════════ */
 [data-reveal] { opacity: 1; }
 .hero-h1 .char { opacity: 1; }
+
+/* 字符级 reveal · clip-path 扫描线揭示 */
+.char-reveal {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.char-reveal .char {
+  display: inline-block;
+  will-change: transform, clip-path;
+}
+/* 状态：viewport 内还没揭示 → 用 clip-path 从下往上压住 */
+.char-reveal.pending .char {
+  clip-path: inset(105% 0 -5% 0);
+  transform: translateY(8%);
+  opacity: 0;
+}
+
+/* Outline → Fill 标题（杂志封面感）*/
+.outline-fill {
+  color: var(--text);
+  -webkit-text-stroke: 1px transparent;
+  transition: color 1.0s var(--ease-out),
+              -webkit-text-stroke-color 1.0s var(--ease-out);
+}
+.outline-fill.is-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244, 245, 247, 0.32);
+}
 
 /* ═══════════════════════════════════════════════════════════
    REDUCED MOTION
