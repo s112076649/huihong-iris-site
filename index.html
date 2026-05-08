@@ -37,6 +37,7 @@
     </a>
     <div class="nav-links" role="list">
       <a class="nav-link" href="#scenarios" role="listitem">场景</a>
+      <a class="nav-link" href="#studio" role="listitem">3D Studio</a>
       <a class="nav-link" href="#cases" role="listitem">案例</a>
       <a class="nav-link" href="#tech" role="listitem">技术</a>
       <a class="nav-link" href="#about" role="listitem">关于</a>
@@ -443,6 +444,32 @@
     </div>
   </section>
 
+  <!-- ───────── 5.3 IRIS STUDIO · 可拖拽 3D 虹膜 ───────── -->
+  <section class="studio-section" id="studio" aria-label="3D 虹膜实验室">
+    <div class="container studio-header" data-reveal>
+      <span class="eyebrow">实时 · 可交互</span>
+      <h2 class="section-h2">把核心 抓在手里</h2>
+      <p class="section-sub">这只虹膜由我们的 GLSL 着色器在你的浏览器里实时渲染。**拖动旋转**，从任意角度看清纤维、瞳孔、外缘——和你部署到客户场景里看到的，是同一段代码。</p>
+    </div>
+
+    <div class="studio-stage">
+      <!-- React Three Fiber 挂载点 -->
+      <div id="iris-studio-mount" class="studio-mount"></div>
+
+      <!-- HUD overlay · 边角技术标签（始终覆盖在 3D 上）-->
+      <div class="studio-hud" aria-hidden="true">
+        <span class="studio-hud-label studio-hud-tl">DRAG TO ROTATE</span>
+        <span class="studio-hud-label studio-hud-tr">REAL-TIME · 60 FPS</span>
+        <span class="studio-hud-label studio-hud-bl">GLSL · WEBGL 2.0</span>
+        <span class="studio-hud-label studio-hud-br">DOUBLE-CLICK → SCAN</span>
+      </div>
+    </div>
+
+    <div class="container studio-footnote" data-reveal>
+      <span class="mono accent">※</span> 你看到的 3D 模型与我们交付给客户的核心算法基于同一份代码。区别只在于：客户端没有这个外壳，直接接入 SDK。
+    </div>
+  </section>
+
   <!-- ───────── 5.4 CASE GALLERY ───────── -->
   <section class="cases-section" id="cases" aria-label="部署案例">
     <div class="container">
@@ -806,15 +833,24 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
-  <!-- Three.js via importmap -->
+  <!-- Three.js + React + R3F + Drei + htm via esm.sh importmap -->
   <script type="importmap">
   {
     "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      "three": "https://esm.sh/three@0.160.0",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+      "react": "https://esm.sh/react@18.3.1",
+      "react-dom": "https://esm.sh/react-dom@18.3.1",
+      "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+      "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.17.0?deps=react@18.3.1,react-dom@18.3.1,three@0.160.0",
+      "@react-three/drei": "https://esm.sh/@react-three/drei@9.114.0?deps=react@18.3.1,react-dom@18.3.1,three@0.160.0,@react-three/fiber@8.17.0",
+      "@react-three/postprocessing": "https://esm.sh/@react-three/postprocessing@2.16.2?deps=react@18.3.1,three@0.160.0,@react-three/fiber@8.17.0",
+      "htm": "https://esm.sh/htm@3.1.1"
     }
   }
   </script>
 
   <script type="module" src="./main.js"></script>
+  <script type="module" src="./iris-studio.js"></script>
 </body>
 </html>

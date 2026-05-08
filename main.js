@@ -837,6 +837,7 @@ function initScrollProgress() {
       compare: 'BENCHMARK',
       stats: 'METRICS',
       scenarios: 'SCENARIOS',
+      studio: '3D STUDIO',
       cases: 'CASES',
       tech: 'ENGINE',
       about: 'ABOUT',

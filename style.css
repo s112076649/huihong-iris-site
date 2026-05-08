@@ -1151,6 +1151,121 @@ h1, h2, h3, h4 {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   5.3 IRIS STUDIO — 可拖拽 3D 虹膜（R3F + Drei + Bloom）
+═══════════════════════════════════════════════════════════ */
+.studio-section {
+  padding-block: clamp(80px, 12vh, 140px) 0;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+.studio-header {
+  margin-bottom: 56px;
+}
+.studio-header .section-h2 {
+  margin-bottom: 24px;
+}
+.studio-header .section-sub {
+  max-width: 720px;
+}
+
+/* 3D 舞台 · 全屏宽 · 高度 90vh */
+.studio-stage {
+  position: relative;
+  width: 100%;
+  height: 90vh;
+  min-height: 640px;
+  max-height: 1000px;
+  background:
+    radial-gradient(ellipse at center, rgba(76, 179, 255, 0.05) 0%, transparent 60%),
+    var(--bg);
+  border-block: 1px solid var(--border);
+}
+
+.studio-mount {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.studio-mount canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  cursor: grab;
+}
+.studio-mount canvas:active { cursor: grabbing; }
+
+/* HUD 4 角标签（不和 3D canvas 抢点击）*/
+.studio-hud {
+  position: absolute;
+  inset: 24px;
+  pointer-events: none;
+  z-index: 2;
+}
+.studio-hud-label {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  text-transform: uppercase;
+  opacity: 0.72;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.studio-hud-label::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.studio-hud-tl { top: 0; left: 0; }
+.studio-hud-tr { top: 0; right: 0; flex-direction: row-reverse; }
+.studio-hud-bl { bottom: 0; left: 0; }
+.studio-hud-br { bottom: 0; right: 0; flex-direction: row-reverse; }
+
+/* 4 角瞄准括号（fixed 位置 · 仅边距感）*/
+.studio-stage::before,
+.studio-stage::after {
+  content: '';
+  position: absolute;
+  width: 24px; height: 24px;
+  border: 1px solid var(--accent);
+  opacity: 0.4;
+}
+.studio-stage::before {
+  top: 16px; left: 16px;
+  border-right: none;
+  border-bottom: none;
+}
+.studio-stage::after {
+  bottom: 16px; right: 16px;
+  border-left: none;
+  border-top: none;
+}
+
+.studio-footnote {
+  margin-top: 32px;
+  margin-bottom: 0;
+  padding-bottom: clamp(80px, 12vh, 140px);
+  font-size: 12px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+  text-align: center;
+  max-width: 820px;
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) {
+  .studio-stage { height: 70vh; min-height: 480px; }
+  .studio-hud-label { font-size: 9px; letter-spacing: 0.18em; }
+  .studio-hud { inset: 16px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
    5.4 CASE GALLERY — 真实部署案例（4 卡 + 真实照片背景）
 ═══════════════════════════════════════════════════════════ */
 .cases-section {
