@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <!-- ───── Logo I v2 · Iris · Scan · Pay ─────
+       上：虹膜环 + 瞳孔（眼睛 / 输入）
+       下：3 道渐隐辐射波（NFC tap-to-pay 信号 / 输出）
+       叙事：扫一下虹膜 → 支付信号广播 → 完成 -->
+
+  <!-- 虹膜外环（顶部） -->
+  <circle cx="120" cy="78" r="40"
+          fill="none" stroke="#E8EBED" stroke-width="14"/>
+
+  <!-- 瞳孔实心 -->
+  <circle cx="120" cy="78" r="13" fill="#E8EBED"/>
+
+  <!-- 瞳孔高光 -->
+  <circle cx="116" cy="74" r="3.5" fill="#FFFFFF" opacity="0.85"/>
+
+  <!-- NFC tap-to-pay 辐射波（向下广播 · 3 层渐隐） -->
+  <path d="M 84 158 Q 120 138, 156 158"
+        stroke="#E8EBED" stroke-width="11"
+        stroke-linecap="round" fill="none"/>
+  <path d="M 72 188 Q 120 160, 168 188"
+        stroke="#E8EBED" stroke-width="11"
+        stroke-linecap="round" fill="none" opacity="0.65"/>
+  <path d="M 60 218 Q 120 184, 180 218"
+        stroke="#E8EBED" stroke-width="11"
+        stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

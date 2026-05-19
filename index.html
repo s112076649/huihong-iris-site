@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#000000" />
-  <title>汇虹数智科技 · 一把长在身体里的钥匙</title>
-  <meta name="description" content="汇虹数智科技 · 虹膜识别核心源代码自主。针对安防、门禁、隐私、冷钱包等场景独立定制模组，无接触、活体检测、断网可用。" />
+  <title>IRYON · A Key That Lives Inside You</title>
+  <meta name="description" content="IRYON · 虹膜识别核心源代码自主。针对安防、门禁、隐私、冷钱包等场景独立定制模组，无接触、活体检测、断网可用。" />
+
+  <!-- Favicon · 动态由 switcher JS 切换 -->
+  <link id="favicon" rel="icon" type="image/svg+xml" href="./assets/logos/iryon-i-bronzeplus.svg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,15 +27,12 @@
 
   <!-- ───────── 1. NAV ───────── -->
   <nav class="nav" id="nav" aria-label="主导航">
-    <a class="nav-logo" href="#hero" aria-label="汇虹数智科技 首页">
-      <svg class="nav-logo-mark" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-        <circle cx="11" cy="11" r="10" fill="none" stroke="currentColor" stroke-width="1"/>
-        <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1"/>
-        <circle cx="11" cy="11" r="2.5" fill="currentColor"/>
-      </svg>
+    <a class="nav-logo" href="#hero" aria-label="IRYON Home">
+      <img id="nav-logo-img" class="nav-logo-mark" src="./assets/logos/iryon-i-bronzeplus.svg"
+           width="30" height="30" alt="" aria-hidden="true"/>
       <span class="nav-logo-text">
-        <span class="nav-logo-cn">汇虹数智</span>
-        <span class="nav-logo-en">HUIHONG</span>
+        <span class="nav-logo-en">IRYON</span>
+        <span class="nav-logo-ipa">/ˈaɪ.ri.ɒn/</span>
       </span>
     </a>
     <div class="nav-links" role="list">
@@ -58,8 +58,8 @@
             <stop offset="100%" stop-color="rgba(0,0,0,1)"/>
           </radialGradient>
           <radialGradient id="fbScanGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.9"/>
-            <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+            <stop offset="0%" stop-color="#CD7F32" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#CD7F32" stop-opacity="0"/>
           </radialGradient>
           <filter id="fbBlueTint">
             <feColorMatrix type="matrix" values="
@@ -608,7 +608,7 @@
       <div class="container tech-pin-inner">
 
         <aside class="tech-copy">
-          <span class="eyebrow">HUIHONG ENGINE · 自主可控</span>
+          <span class="eyebrow">IRYON ENGINE · 自主可控</span>
           <h2 class="section-h2">三步，就把你认出来</h2>
           <p class="tech-step" data-step="1">
             <span class="tech-step-num mono accent">01</span>
@@ -636,8 +636,8 @@
                 <stop offset="100%" stop-color="rgba(0,0,0,1)"/>
               </radialGradient>
               <radialGradient id="scanGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.9"/>
-                <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+                <stop offset="0%" stop-color="#CD7F32" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#CD7F32" stop-opacity="0"/>
               </radialGradient>
               <!-- 蓝光偏色（CAPTURE）-->
               <filter id="techBlueTint">
@@ -779,14 +779,11 @@
     <div class="container footer-grid">
       <div class="footer-col footer-col-brand">
         <div class="footer-brand">
-          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-            <circle cx="11" cy="11" r="10" fill="none" stroke="currentColor" stroke-width="1"/>
-            <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1"/>
-            <circle cx="11" cy="11" r="2.5" fill="currentColor"/>
-          </svg>
+          <img id="footer-logo-img" src="./assets/logos/iryon-i-bronzeplus.svg"
+               width="28" height="28" alt="" aria-hidden="true"/>
           <div class="footer-brand-text">
-            <span class="footer-brand-cn">汇虹数智科技</span>
-            <span class="footer-brand-en mono">HUIHONG · A Key That Lives Inside You</span>
+            <span class="footer-brand-en mono">IRYON</span>
+            <span class="footer-brand-tagline mono">A Key That Lives Inside You</span>
           </div>
         </div>
       </div>
@@ -821,7 +818,7 @@
     </div>
 
     <div class="container footer-bottom">
-      <span class="mono"><span id="year"></span> · 汇虹数智科技 · 保留所有权利</span>
+      <span class="mono">© <span id="year"></span> · IRYON · 汇虹数智科技 · ALL RIGHTS RESERVED</span>
       <span class="mono footer-bottom-slogan">你的虹膜，只属于你</span>
     </div>
   </footer>

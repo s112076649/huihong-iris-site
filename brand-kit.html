@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IRYON · Brand Kit · Logo I · 9 Gold Variants</title>
+  <style>
+    :root {
+      --bg: #0B0D11;
+      --surface: #14161B;
+      --surface-2: #1A1D24;
+      --border: rgba(232, 232, 232, 0.08);
+      --text: #F4F5F7;
+      --text-dim: rgba(244, 245, 247, 0.55);
+      --text-dim-2: rgba(244, 245, 247, 0.32);
+      --green: #4ADE80;
+      --warn: #F59E0B;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+      padding: 64px 4vw 120px;
+      min-height: 100vh;
+    }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+    .header { max-width: 1480px; margin: 0 auto 28px; }
+    .eyebrow {
+      font-size: 11px; letter-spacing: 0.32em;
+      color: var(--text-dim-2); margin-bottom: 16px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 600; letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    h1 .gold { color: #C9A876; }
+    .sub {
+      color: var(--text-dim); font-size: 15px;
+      max-width: 920px; line-height: 1.7;
+    }
+
+    /* Bazi reasoning */
+    .bazi-box {
+      max-width: 1480px; margin: 24px auto 48px;
+      padding: 18px 24px;
+      background: rgba(201, 168, 118, 0.08);
+      border-left: 3px solid #C9A876;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px; color: var(--text-dim);
+      line-height: 1.75;
+    }
+    .bazi-box strong { color: #C9A876; }
+
+    /* Section divider */
+    .section-title {
+      max-width: 1480px;
+      margin: 64px auto 24px;
+      display: flex; align-items: baseline; gap: 16px;
+    }
+    .section-title h2 {
+      font-size: 22px; font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .section-title-en {
+      font-size: 11px; color: var(--text-dim-2);
+      letter-spacing: 0.24em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .section-title-line {
+      flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* Gold grid: 3 cols × 2 rows */
+    .gold-grid {
+      max-width: 1480px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+    @media (max-width: 1080px) { .gold-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 720px) { .gold-grid { grid-template-columns: 1fr; } }
+
+    .gold-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .gold-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--gold-color, #C9A876);
+    }
+    .gold-card.is-recommended {
+      border-color: var(--gold-color, #BFA98C);
+      box-shadow: 0 0 0 1px var(--gold-color, #BFA98C),
+                  0 8px 32px rgba(191, 169, 140, 0.12);
+    }
+
+    .gold-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .gold-tag-row {
+      display: flex; align-items: center;
+      gap: 10px; margin-bottom: 12px;
+    }
+    .gold-swatch {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--gold-color, #C9A876);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25),
+                  0 0 0 1px rgba(244, 245, 247, 0.08);
+    }
+    .gold-tag-text {
+      flex: 1; min-width: 0;
+    }
+    .gold-name {
+      font-size: 16px; font-weight: 600;
+      letter-spacing: -0.01em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .gold-recommend {
+      font-size: 8px; letter-spacing: 0.24em;
+      color: var(--gold-color, #BFA98C);
+      padding: 2px 6px;
+      border: 1px solid var(--gold-color, #BFA98C);
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .gold-hex {
+      font-size: 11px; color: var(--text-dim-2);
+      letter-spacing: 0.16em; margin-top: 2px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .gold-desc {
+      font-size: 11px; color: var(--text-dim);
+      line-height: 1.6;
+      margin-top: 8px;
+    }
+
+    /* Preview · I only (G removed after brand lock) */
+    .preview-pair {
+      display: grid;
+      grid-template-columns: 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+    .preview-cell {
+      aspect-ratio: 1 / 1;
+      display: flex; align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: #0B0D11;
+      position: relative;
+    }
+    .preview-cell + .preview-cell {
+      border-left: 1px solid var(--border);
+    }
+    .preview-cell img { width: 70%; height: auto; }
+    .preview-cell-label {
+      position: absolute;
+      top: 8px; left: 10px;
+      font-size: 9px;
+      color: rgba(244, 245, 247, 0.4);
+      letter-spacing: 0.2em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Lockup preview */
+    .preview-lockup {
+      padding: 16px 22px;
+      background: #0B0D11;
+      border-bottom: 1px solid var(--border);
+    }
+    .preview-lockup img { width: 100%; height: auto; display: block; }
+    .preview-lockup + .preview-lockup { border-top: 1px solid var(--border); }
+    .preview-lockup-label {
+      font-size: 9px;
+      color: rgba(244, 245, 247, 0.4);
+      letter-spacing: 0.2em;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 8px;
+    }
+
+    /* Downloads */
+    .downloads { padding: 14px 18px; }
+    .dl-row {
+      display: flex; gap: 5px; flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .dl-label {
+      font-size: 9px; color: var(--text-dim-2);
+      letter-spacing: 0.18em;
+      font-family: 'JetBrains Mono', monospace;
+      width: 56px; flex-shrink: 0;
+      align-self: center;
+    }
+    .btn-dl {
+      padding: 5px 8px;
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-dl:hover {
+      color: var(--text);
+      border-color: var(--gold-color, #C9A876);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .btn-dl:active { transform: translateY(1px); }
+    .btn-dl[disabled] { opacity: 0.5; cursor: wait; }
+
+    .btn-zip {
+      display: inline-flex;
+      align-items: center; gap: 6px;
+      width: 100%; margin-top: 10px;
+      padding: 9px 14px;
+      background: var(--gold-color, #C9A876);
+      color: #0B0D11;
+      border: none; border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em;
+      cursor: pointer; justify-content: center;
+      transition: transform 0.2s;
+    }
+    .btn-zip:hover { transform: translateY(-1px); }
+    .btn-zip svg { width: 13px; height: 13px; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--green); color: #0B0D11;
+      padding: 12px 24px; border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; letter-spacing: 0.1em;
+      font-weight: 600;
+      opacity: 0; transition: all 0.3s ease;
+      z-index: 9999;
+      box-shadow: 0 8px 24px rgba(74, 222, 128, 0.3);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Back link */
+    .back-link {
+      max-width: 1480px; margin: 0 auto 24px;
+      display: inline-flex; gap: 12px; align-items: center;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; letter-spacing: 0.12em;
+    }
+    .back-link a { color: #C9A876; }
+
+    /* Footer */
+    .footer {
+      max-width: 1480px; margin: 64px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+      font-size: 11px; color: var(--text-dim-2);
+      letter-spacing: 0.16em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back-link">
+    ← <a href="./logo-preview.html">logo preview</a> &nbsp;·&nbsp;
+    <a href="./index.html">live site</a>
+  </div>
+
+  <header class="header">
+    <div class="eyebrow">IRYON · BRAND KIT · LOGO I · 9 TECH-GOLD VARIANTS · 2026·05·19</div>
+    <h1>六种<span class="gold">科技金</span> · 任选一个</h1>
+    <p class="sub">基于你 <strong style="color:#C9A876">丁卯日身强木火炎上</strong> 的八字诊断，<strong>用神 = 金水</strong>。这 9 个金都属"金"元素，区别只是色温/饱和度。Logo 已定稿为 <strong>I · 虹膜扫描支付波</strong>。每张卡片是 symbol + 横版 lockup，可下载 SVG / PNG 多尺寸。</p>
+  </header>
+
+  <div class="bazi-box">
+    <strong>📍 命理对齐</strong> · 6 个金都是"金"用神（你的财星）。背景近黑承接"水"调候。<strong>钛金 #BFA98C</strong> 是我升级推荐 —— 比香槟金更冷峻克制，最像 iPhone 15 Pro Titanium 的高端 B2B 气场。但每个金都成立 —— 这是审美选择题，不是命理选择题。
+  </div>
+
+  <div class="section-title">
+    <h2>6 个金 · 横向对比</h2>
+    <span class="section-title-en">I · IRIS · SCAN · PAY</span>
+    <span class="section-title-line"></span>
+  </div>
+
+  <div class="gold-grid">
+
+    <!-- ═════ TITANIUM (recommended) ═════ -->
+    <div class="gold-card is-recommended" style="--gold-color:#BFA98C" data-gold="titanium">
+      <div class="gold-header">
+        <div class="gold-tag-row">
+          <span class="gold-swatch"></span>
+          <div class="gold-tag-text">
+            <div class="gold-name">钛金 TITANIUM <span class="gold-recommend">⭐ 升级首选</span></div>
+            <div class="gold-hex">#BFA98C · 哑光冷感</div>
+          </div>
+        </div>
+        <div class="gold-desc">iPhone 15 Pro Titanium 同款色温。最"科技 B2B"的金。</div>
+      </div>
+      <div class="preview-pair">
+        <div class="preview-cell"><span class="preview-cell-label">I</span><img src="./assets/logos/iryon-i-titanium.svg" alt=""/></div>
+      </div>
+      <div class="preview-lockup">
+        <div class="preview-lockup-label">I · LOCKUP</div>
+        <img src="./assets/logos/iryon-i-lockup-titanium.svg" alt=""/>
+      </div>
+      <div class="downloads">
+        <div class="dl-row">
+          <span class="dl-label">I</span>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="symbol" data-gold="titanium">SVG</button>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="lockup" data-gold="titanium">LOCKUP</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="symbol" data-gold="titanium" data-scale="8">PNG 2K</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="lockup" data-gold="titanium" data-scale="4">LK 3K</button>
+        </div>
+        <button class="btn-zip" data-action="dl-zip" data-gold="titanium">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          打包 ZIP · 钛金 · 全套
+        </button>
+      </div>
+    </div>
+
+    <!-- ═════ CHAMPAGNE ═════ -->
+    <div class="gold-card" style="--gold-color:#C9A876" data-gold="beta">
+      <div class="gold-header">
+        <div class="gold-tag-row">
+          <span class="gold-swatch"></span>
+          <div class="gold-tag-text">
+            <div class="gold-name">香槟金 CHAMPAGNE</div>
+            <div class="gold-hex">#C9A876 · 标准平衡</div>
+          </div>
+        </div>
+        <div class="gold-desc">最经典香槟金。Visa Premium / 高端酒店 lobby 的金。</div>
+      </div>
+      <div class="preview-pair">
+        <div class="preview-cell"><span class="preview-cell-label">I</span><img src="./assets/logos/iryon-i-beta.svg" alt=""/></div>
+      </div>
+      <div class="preview-lockup">
+        <div class="preview-lockup-label">I · LOCKUP</div>
+        <img src="./assets/logos/iryon-i-lockup-beta.svg" alt=""/>
+      </div>
+      <div class="downloads">
+        <div class="dl-row">
+          <span class="dl-label">I</span>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="symbol" data-gold="beta">SVG</button>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="lockup" data-gold="beta">LOCKUP</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="symbol" data-gold="beta" data-scale="8">PNG 2K</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="lockup" data-gold="beta" data-scale="4">LK 3K</button>
+        </div>
+        <button class="btn-zip" data-action="dl-zip" data-gold="beta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          打包 ZIP · 香槟金 · 全套
+        </button>
+      </div>
+    </div>
+
+    <!-- ═════ HONEY ═════ -->
+    <div class="gold-card" style="--gold-color:#D4B26A" data-gold="honey">
+      <div class="gold-header">
+        <div class="gold-tag-row">
+          <span class="gold-swatch"></span>
+          <div class="gold-tag-text">
+            <div class="gold-name">蜜金 HONEY</div>
+            <div class="gold-hex">#D4B26A · 暖感饱满</div>
+          </div>
+        </div>
+        <div class="gold-desc">饱和度最高的金。Cartier / 奢侈品包装常用色。视觉冲击最强。</div>
+      </div>
+      <div class="preview-pair">
+        <div class="preview-cell"><span class="preview-cell-label">I</span><img src="./assets/logos/iryon-i-honey.svg" alt=""/></div>
+      </div>
+      <div class="preview-lockup">
+        <div class="preview-lockup-label">I · LOCKUP</div>
+        <img src="./assets/logos/iryon-i-lockup-honey.svg" alt=""/>
+      </div>
+      <div class="downloads">
+        <div class="dl-row">
+          <span class="dl-label">I</span>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="symbol" data-gold="honey">SVG</button>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="lockup" data-gold="honey">LOCKUP</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="symbol" data-gold="honey" data-scale="8">PNG 2K</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="lockup" data-gold="honey" data-scale="4">LK 3K</button>
+        </div>
+        <button class="btn-zip" data-action="dl-zip" data-gold="honey">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          打包 ZIP · 蜜金 · 全套
+        </button>
+      </div>
+    </div>
+
+    <!-- ═════ MOONLIGHT ═════ -->
+    <div class="gold-card" style="--gold-color:#E5D4A8" data-gold="moonlight">
+      <div class="gold-header">
+        <div class="gold-tag-row">
+          <span class="gold-swatch"></span>
+          <div class="gold-tag-text">
+            <div class="gold-name">月光金 MOONLIGHT</div>
+            <div class="gold-hex">#E5D4A8 · 极浅淡雅</div>
+          </div>
+        </div>
+        <div class="gold-desc">最浅的金，几乎接近米色。OpenAI / Notion 那种极简感。</div>
+      </div>
+      <div class="preview-pair">
+        <div class="preview-cell"><span class="preview-cell-label">I</span><img src="./assets/logos/iryon-i-moonlight.svg" alt=""/></div>
+      </div>
+      <div class="preview-lockup">
+        <div class="preview-lockup-label">I · LOCKUP</div>
+        <img src="./assets/logos/iryon-i-lockup-moonlight.svg" alt=""/>
+      </div>
+      <div class="downloads">
+        <div class="dl-row">
+          <span class="dl-label">I</span>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="symbol" data-gold="moonlight">SVG</button>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="lockup" data-gold="moonlight">LOCKUP</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="symbol" data-gold="moonlight" data-scale="8">PNG 2K</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="lockup" data-gold="moonlight" data-scale="4">LK 3K</button>
+        </div>
+        <button class="btn-zip" data-action="dl-zip" data-gold="moonlight">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          打包 ZIP · 月光金 · 全套
+        </button>
+      </div>
+    </div>
+
+    <!-- ═════ BRONZE ═════ -->
+    <div class="gold-card" style="--gold-color:#A88860" data-gold="bronze">
+      <div class="gold-header">
+        <div class="gold-tag-row">
+          <span class="gold-swatch"></span>
+          <div class="gold-tag-text">
+            <div class="gold-name">古铜金 BRONZE</div>
+            <div class="gold-hex">#A88860 · 沉稳工业</div>
+          </div>
+        </div>
+        <div class="gold-desc">最深的金，接近铜色。Bang & Olufsen / 高端音响 / 机械手表的金。</div>
+      </div>
+      <div class="preview-pair">
+        <div class="preview-cell"><span class="preview-cell-label">I</span><img src="./assets/logos/iryon-i-bronze.svg" alt=""/></div>
+      </div>
+      <div class="preview-lockup">
+        <div class="preview-lockup-label">I · LOCKUP</div>
+        <img src="./assets/logos/iryon-i-lockup-bronze.svg" alt=""/>
+      </div>
+      <div class="downloads">
+        <div class="dl-row">
+          <span class="dl-label">I</span>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="symbol" data-gold="bronze">SVG</button>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="lockup" data-gold="bronze">LOCKUP</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="symbol" data-gold="bronze" data-scale="8">PNG 2K</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="lockup" data-gold="bronze" data-scale="4">LK 3K</button>
+        </div>
+        <button class="btn-zip" data-action="dl-zip" data-gold="bronze">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          打包 ZIP · 古铜金 · 全套
+        </button>
+      </div>
+    </div>
+
+    <!-- ═════ COPPER (warm metal · closest to orange) ═════ -->
+    <div class="gold-card" style="--gold-color:#B87333" data-gold="copper">
+      <div class="gold-header">
+        <div class="gold-tag-row">
+          <span class="gold-swatch"></span>
+          <div class="gold-tag-text">
+            <div class="gold-name">紫铜 COPPER <span class="gold-recommend">🔥 最像橙</span></div>
+            <div class="gold-hex">#B87333 · 暖金属</div>
+          </div>
+        </div>
+        <div class="gold-desc">12 号铜线 / 老建筑铜顶。视觉最接近橙色,本质仍是金属（铜元素本就属"金"）。</div>
+      </div>
+      <div class="preview-pair">
+        <div class="preview-cell"><span class="preview-cell-label">I</span><img src="./assets/logos/iryon-i-copper.svg" alt=""/></div>
+      </div>
+      <div class="preview-lockup">
+        <div class="preview-lockup-label">I · LOCKUP</div>
+        <img src="./assets/logos/iryon-i-lockup-copper.svg" alt=""/>
+      </div>
+      <div class="downloads">
+        <div class="dl-row">
+          <span class="dl-label">I</span>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="symbol" data-gold="copper">SVG</button>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="lockup" data-gold="copper">LOCKUP</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="symbol" data-gold="copper" data-scale="8">PNG 2K</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="lockup" data-gold="copper" data-scale="4">LK 3K</button>
+        </div>
+        <button class="btn-zip" data-action="dl-zip" data-gold="copper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          打包 ZIP · 紫铜 · 全套
+        </button>
+      </div>
+    </div>
+
+    <!-- ═════ BRONZE+ (vibrant bronze) ═════ -->
+    <div class="gold-card" style="--gold-color:#CD7F32" data-gold="bronzeplus">
+      <div class="gold-header">
+        <div class="gold-tag-row">
+          <span class="gold-swatch"></span>
+          <div class="gold-tag-text">
+            <div class="gold-name">焦青铜 BRONZE+</div>
+            <div class="gold-hex">#CD7F32 · 饱满铜</div>
+          </div>
+        </div>
+        <div class="gold-desc">古希腊青铜雕 / 奥运铜牌。比古铜金更亮更橙,西方设计史定义的标准 bronze。</div>
+      </div>
+      <div class="preview-pair">
+        <div class="preview-cell"><span class="preview-cell-label">I</span><img src="./assets/logos/iryon-i-bronzeplus.svg" alt=""/></div>
+      </div>
+      <div class="preview-lockup">
+        <div class="preview-lockup-label">I · LOCKUP</div>
+        <img src="./assets/logos/iryon-i-lockup-bronzeplus.svg" alt=""/>
+      </div>
+      <div class="downloads">
+        <div class="dl-row">
+          <span class="dl-label">I</span>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="symbol" data-gold="bronzeplus">SVG</button>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="lockup" data-gold="bronzeplus">LOCKUP</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="symbol" data-gold="bronzeplus" data-scale="8">PNG 2K</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="lockup" data-gold="bronzeplus" data-scale="4">LK 3K</button>
+        </div>
+        <button class="btn-zip" data-action="dl-zip" data-gold="bronzeplus">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          打包 ZIP · 焦青铜 · 全套
+        </button>
+      </div>
+    </div>
+
+    <!-- ═════ AMBER (between copper and gold) ═════ -->
+    <div class="gold-card" style="--gold-color:#C2843F" data-gold="amber">
+      <div class="gold-header">
+        <div class="gold-tag-row">
+          <span class="gold-swatch"></span>
+          <div class="gold-tag-text">
+            <div class="gold-name">琥珀金 AMBER</div>
+            <div class="gold-hex">#C2843F · 暖金桥</div>
+          </div>
+        </div>
+        <div class="gold-desc">干邑酒色 / 老黄铜乐器。介于铜和金之间,保留金属液体的"流光感"。</div>
+      </div>
+      <div class="preview-pair">
+        <div class="preview-cell"><span class="preview-cell-label">I</span><img src="./assets/logos/iryon-i-amber.svg" alt=""/></div>
+      </div>
+      <div class="preview-lockup">
+        <div class="preview-lockup-label">I · LOCKUP</div>
+        <img src="./assets/logos/iryon-i-lockup-amber.svg" alt=""/>
+      </div>
+      <div class="downloads">
+        <div class="dl-row">
+          <span class="dl-label">I</span>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="symbol" data-gold="amber">SVG</button>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="lockup" data-gold="amber">LOCKUP</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="symbol" data-gold="amber" data-scale="8">PNG 2K</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="lockup" data-gold="amber" data-scale="4">LK 3K</button>
+        </div>
+        <button class="btn-zip" data-action="dl-zip" data-gold="amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          打包 ZIP · 琥珀金 · 全套
+        </button>
+      </div>
+    </div>
+
+    <!-- ═════ SMOKE ═════ -->
+    <div class="gold-card" style="--gold-color:#B5985A" data-gold="smoke">
+      <div class="gold-header">
+        <div class="gold-tag-row">
+          <span class="gold-swatch"></span>
+          <div class="gold-tag-text">
+            <div class="gold-name">烟金 SMOKE</div>
+            <div class="gold-hex">#B5985A · 哑光设计师</div>
+          </div>
+        </div>
+        <div class="gold-desc">哑光烟熏感。Aesop / Le Labo / 高端实验室包装的金。</div>
+      </div>
+      <div class="preview-pair">
+        <div class="preview-cell"><span class="preview-cell-label">I</span><img src="./assets/logos/iryon-i-smoke.svg" alt=""/></div>
+      </div>
+      <div class="preview-lockup">
+        <div class="preview-lockup-label">I · LOCKUP</div>
+        <img src="./assets/logos/iryon-i-lockup-smoke.svg" alt=""/>
+      </div>
+      <div class="downloads">
+        <div class="dl-row">
+          <span class="dl-label">I</span>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="symbol" data-gold="smoke">SVG</button>
+          <button class="btn-dl" data-action="dl-svg" data-logo="i" data-variant="lockup" data-gold="smoke">LOCKUP</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="symbol" data-gold="smoke" data-scale="8">PNG 2K</button>
+          <button class="btn-dl" data-action="dl-png" data-logo="i" data-variant="lockup" data-gold="smoke" data-scale="4">LK 3K</button>
+        </div>
+        <button class="btn-zip" data-action="dl-zip" data-gold="smoke">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          打包 ZIP · 烟金 · 全套
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <span>IRYON · /ˈaɪ.ri.ɒn/ · 6 GOLDS · BAZI ALIGNED</span>
+    <span>FONT: INTER BOLD &nbsp;·&nbsp; BG: #0B0D11 (水)</span>
+  </footer>
+
+  <div id="toast" class="toast">✓ 下载完成</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <script>
+    const GOLD_INFO = {
+      beta:       { name: 'champagne',  color: '#C9A876', label: '香槟金' },
+      titanium:   { name: 'titanium',   color: '#BFA98C', label: '钛金' },
+      honey:      { name: 'honey',      color: '#D4B26A', label: '蜜金' },
+      moonlight:  { name: 'moonlight',  color: '#E5D4A8', label: '月光金' },
+      bronze:     { name: 'bronze',     color: '#A88860', label: '古铜金' },
+      smoke:      { name: 'smoke',      color: '#B5985A', label: '烟金' },
+      copper:     { name: 'copper',     color: '#B87333', label: '紫铜' },
+      bronzeplus: { name: 'bronzeplus', color: '#CD7F32', label: '焦青铜' },
+      amber:      { name: 'amber',      color: '#C2843F', label: '琥珀金' }
+    };
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function getFilePath(logo, variant, gold) {
+      return variant === 'lockup'
+        ? `./assets/logos/iryon-${logo}-lockup-${gold}.svg`
+        : `./assets/logos/iryon-${logo}-${gold}.svg`;
+    }
+
+    async function fetchSvg(path) {
+      return (await fetch(path)).text();
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function dlSvg(logo, variant, gold) {
+      const info = GOLD_INFO[gold];
+      const text = await fetchSvg(getFilePath(logo, variant, gold));
+      downloadBlob(
+        new Blob([text], { type: 'image/svg+xml;charset=utf-8' }),
+        `IRYON-${logo.toUpperCase()}-${variant}-${info.name}.svg`
+      );
+      showToast(`✓ ${info.label} · ${logo.toUpperCase()} · ${variant} 完成`);
+    }
+
+    async function svgToPngBlob(svgText, scale) {
+      const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+      const svgEl = doc.documentElement;
+      const vb = svgEl.getAttribute('viewBox').split(/\s+/).map(Number);
+      const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(vb[2] * scale);
+          canvas.height = Math.round(vb[3] * scale);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(pngBlob => {
+            URL.revokeObjectURL(url);
+            resolve({ blob: pngBlob, w: canvas.width, h: canvas.height });
+          }, 'image/png');
+        };
+        img.onerror = e => { URL.revokeObjectURL(url); reject(e); };
+        img.src = url;
+      });
+    }
+
+    async function dlPng(logo, variant, gold, scale) {
+      const info = GOLD_INFO[gold];
+      const text = await fetchSvg(getFilePath(logo, variant, gold));
+      const { blob, w, h } = await svgToPngBlob(text, scale);
+      downloadBlob(blob, `IRYON-${logo.toUpperCase()}-${variant}-${info.name}-${w}x${h}.png`);
+      showToast(`✓ ${info.label} PNG (${w}×${h}) 完成`);
+    }
+
+    async function dlZip(gold) {
+      const info = GOLD_INFO[gold];
+      showToast(`📦 打包 ${info.label} 中…`);
+      const zip = new JSZip();
+      const root = zip.folder(`IRYON-${info.name}-brand-kit`);
+
+      // For BOTH G and I, generate full set
+      for (const logo of ['g', 'i']) {
+        for (const variant of ['symbol', 'lockup']) {
+          const text = await fetchSvg(getFilePath(logo, variant, gold));
+          root.file(`SVG/IRYON-${logo.toUpperCase()}-${variant}-${info.name}.svg`, text);
+
+          // White + black variants
+          const whiteVer = text.replaceAll(info.color, '#FFFFFF').replaceAll('#888888', '#FFFFFF');
+          const blackVer = text.replaceAll(info.color, '#000000').replaceAll('#888888', '#000000').replaceAll('#0B0D11', '#FFFFFF');
+          root.file(`SVG/IRYON-${logo.toUpperCase()}-${variant}-white.svg`, whiteVer);
+          root.file(`SVG/IRYON-${logo.toUpperCase()}-${variant}-black.svg`, blackVer);
+
+          // PNGs at 3 scales
+          const scales = variant === 'symbol'
+            ? [{ n: '1024', s: 4 }, { n: '2048', s: 8 }, { n: '4096', s: 17 }]
+            : [{ n: '1760x480', s: 2 }, { n: '3520x960', s: 4 }, { n: '5280x1440', s: 6 }];
+          for (const { n, s } of scales) {
+            const { blob } = await svgToPngBlob(text, s);
+            root.file(`PNG/IRYON-${logo.toUpperCase()}-${variant}-${info.name}-${n}.png`, blob);
+          }
+        }
+      }
+
+      root.file('README.txt', `IRYON · Brand Kit · ${info.label}
+====================================================
+Generated: ${new Date().toISOString().split('T')[0]}
+Includes: Logo G + Logo I (full set)
+Color: ${info.color}
+Background: #0B0D11 (preferred)
+
+CONTENTS
+--------
+/SVG/  Vector files for both G and I, in 3 color variants:
+       - ${info.name}  (main palette)
+       - white         (for dark backgrounds)
+       - black         (for light backgrounds)
+       Two compositions per logo:
+       - symbol (square mark only)
+       - lockup (mark + IRYON wordmark + IPA)
+
+/PNG/  Raster renders at 3 resolutions:
+       - symbol:  1024 / 2048 / 4096 px (square)
+       - lockup:  1760 / 3520 / 5280 px (wide)
+
+INSTRUCTIONS FOR SIGN MAKERS / 给招牌厂
+---------------------------------------
+1. Open the SVG in Adobe Illustrator.
+2. Type → Create Outlines (Cmd+Shift+O) to convert
+   the "IRYON" text to vector paths.
+3. Background recommendation: dark / black / glass for ${info.label};
+   white version is for dark walls; black version is for light walls.
+
+BRAND
+-----
+Name:      IRYON
+Phonetic:  /ˈaɪ.ri.ɒn/  (EYE-ree-on)
+Tagline:   A Key That Lives Inside You
+Wordmark:  Inter Bold
+
+PALETTE REASONING (BAZI / 命理依据)
+-----------------------------------
+日主丁火 · 生于卯月 · 身强 · 木火炎上
+用神: 金(财) + 水(官调候)
+忌神: 火(比劫) + 木(印)
+${info.color} 属"金"元素 (财星)。背景 #0B0D11 属"水"元素 (调候)。
+两者组合命理首选。
+`);
+
+      root.file('color-palette.txt', `IRYON COLOR PALETTE · ${info.label}
+========================================
+Primary:    ${info.color}
+Background: #0B0D11
+Font:       Inter Bold
+`);
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      downloadBlob(blob, `IRYON-${info.name}-brand-kit.zip`);
+      showToast(`✓ IRYON-${info.name}-brand-kit.zip 下载完成`);
+    }
+
+    document.body.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const a = btn.dataset.action;
+      try {
+        btn.disabled = true;
+        if (a === 'dl-svg') await dlSvg(btn.dataset.logo, btn.dataset.variant, btn.dataset.gold);
+        else if (a === 'dl-png') await dlPng(btn.dataset.logo, btn.dataset.variant, btn.dataset.gold, Number(btn.dataset.scale));
+        else if (a === 'dl-zip') await dlZip(btn.dataset.gold);
+      } catch (err) {
+        console.error(err);
+        showToast(`✗ 出错了: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

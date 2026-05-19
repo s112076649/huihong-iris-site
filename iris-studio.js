@@ -35,7 +35,7 @@ function IrisSphere({ scanPulse }) {
   const onBeforeCompile = useMemo(() => (shader) => {
     shader.uniforms.uTime = { value: 0 };
     shader.uniforms.uScanPulse = { value: 0 };
-    shader.uniforms.uAccent = { value: new THREE.Color('#FF6B35') };
+    shader.uniforms.uAccent = { value: new THREE.Color('#CD7F32') };
     shader.uniforms.uBlue = { value: new THREE.Color('#4CB3FF') };
 
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -122,7 +122,7 @@ function Lights() {
     <${'ambientLight'} intensity=${0.25} />
     <${'directionalLight'} position=${[3, 2, 5]} intensity=${1.4} color="#FFFFFF" />
     <${'pointLight'} position=${[-4, 0, 2]} intensity=${1.2} color="#4CB3FF" />
-    <${'pointLight'} position=${[4, 0, -2]} intensity=${0.8} color="#FF6B35" />
+    <${'pointLight'} position=${[4, 0, -2]} intensity=${0.8} color="#CD7F32" />
   `;
 }
 

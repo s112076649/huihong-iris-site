@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 240" fill="none">
+  <!-- ───── IRYON · Logo I Lockup (horizontal) ─────
+       symbol + wordmark + IPA · for office signage / business cards / banners
+       注意：印刷前请在 Illustrator 用 Cmd+Shift+O 把 <text> 转成 outline -->
+
+  <title>IRYON · Iris-Scan-Pay Logo Lockup</title>
+  <desc>Horizontal lockup. Font: Inter Bold. Color: #C9A876. Convert text to paths before print.</desc>
+
+  <!-- ── Symbol (I v2 inline) ── -->
+  <g>
+    <!-- iris ring -->
+    <circle cx="120" cy="78" r="40"
+            fill="none" stroke="#C9A876" stroke-width="14"/>
+    <!-- pupil -->
+    <circle cx="120" cy="78" r="13" fill="#C9A876"/>
+    <!-- highlight -->
+    <circle cx="116" cy="74" r="3.5" fill="#FFFFFF" opacity="0.85"/>
+    <!-- 3 NFC waves -->
+    <path d="M 84 158 Q 120 138, 156 158"
+          stroke="#C9A876" stroke-width="11"
+          stroke-linecap="round" fill="none"/>
+    <path d="M 72 188 Q 120 160, 168 188"
+          stroke="#C9A876" stroke-width="11"
+          stroke-linecap="round" fill="none" opacity="0.65"/>
+    <path d="M 60 218 Q 120 184, 180 218"
+          stroke="#C9A876" stroke-width="11"
+          stroke-linecap="round" fill="none" opacity="0.4"/>
+  </g>
+
+  <!-- ── Wordmark IRYON ── -->
+  <text x="220" y="148"
+        font-family="Inter, 'SF Pro Display', system-ui, -apple-system, 'Helvetica Neue', sans-serif"
+        font-size="98" font-weight="700"
+        letter-spacing="22" fill="#C9A876">IRYON</text>
+
+</svg>

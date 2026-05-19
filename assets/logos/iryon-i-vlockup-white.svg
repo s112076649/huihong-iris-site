@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 420" fill="none">
+  <!-- ═══════════════════════════════════════════════════════════
+       IRYON · VERTICAL LOCKUP (上下结构)
+       Logo: I · Iris-Scan-Pay
+       Color: #FFFFFF · 焦青铜 BRONZE+
+       Ratio: 2:3 (320×480) · 办公室门牌/招牌标准比例
+
+       SIGN MAKER NOTE: 印刷前请用 Illustrator 选中文字 →
+       Type → Create Outlines (Cmd+Shift+O) 转成路径
+       ═══════════════════════════════════════════════════════════ -->
+
+  <title>IRYON · Vertical Lockup · Bronze+ #FFFFFF</title>
+  <desc>Vertical brand lockup. Iris-Scan-Pay symbol over IRYON wordmark.</desc>
+
+  <!-- ───── Symbol (Iris Scan Pay) · centered top ───── -->
+  <g transform="translate(40 20)">
+    <!-- iris ring -->
+    <circle cx="120" cy="78" r="40" fill="none" stroke="#FFFFFF" stroke-width="14"/>
+    <!-- pupil -->
+    <circle cx="120" cy="78" r="13" fill="#FFFFFF"/>
+    <!-- highlight -->
+    <circle cx="116" cy="74" r="3.5" fill="#FFFFFF" opacity="0.85"/>
+    <!-- 3 NFC waves (fading down) -->
+    <path d="M 84 158 Q 120 138, 156 158"
+          stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" fill="none"/>
+    <path d="M 72 188 Q 120 160, 168 188"
+          stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" fill="none" opacity="0.65"/>
+    <path d="M 60 218 Q 120 184, 180 218"
+          stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" fill="none" opacity="0.4"/>
+  </g>
+
+  <!-- ───── IRYON wordmark ───── -->
+  <text x="160" y="320" text-anchor="middle"
+        font-family="Inter, 'SF Pro Display', system-ui, -apple-system, 'Helvetica Neue', sans-serif"
+        font-size="64" font-weight="700" letter-spacing="14" fill="#FFFFFF">IRYON</text>
+
+  <!-- ───── Tagline ───── -->
+  <text x="160" y="355" text-anchor="middle"
+        font-family="ui-monospace, 'JetBrains Mono', monospace"
+        font-size="9" letter-spacing="3.5" fill="#999999">A KEY THAT LIVES INSIDE YOU</text>
+</svg>

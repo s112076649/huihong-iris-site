@@ -17,7 +17,7 @@
   /* Borders — 略提升可见度 */
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.16);
-  --border-hover: rgba(255, 107, 53, 0.50);
+  --border-hover: rgba(205, 127, 50, 0.50);
 
   /* Text — off-white 更柔和 */
   --text: #F4F5F7;
@@ -26,12 +26,12 @@
   --text-mono: rgba(244, 245, 247, 0.85);
 
   /* Accent */
-  --accent: #FF6B35;
-  --accent-rgb: 255, 107, 53;
-  --accent-hover: #FF8A5C;
-  --accent-deep: #C94A1D;
-  --accent-glow: rgba(255, 107, 53, 0.40);
-  --text-on-accent: #000000;  /* High-contrast text on orange */
+  --accent: #CD7F32;
+  --accent-rgb: 205, 127, 50;
+  --accent-hover: #E0995D;
+  --accent-deep: #A06022;
+  --accent-glow: rgba(205, 127, 50, 0.40);
+  --text-on-accent: #FFFFFF;  /* High-contrast text on bronze */
 
   /* Iris asset only */
   --iris-core: #4A9EFF;
@@ -286,14 +286,20 @@ h1, h2, h3, h4 {
   transition: color 0.3s ease;
 }
 .nav-logo:hover { color: var(--accent); }
-.nav-logo-mark { color: var(--accent); flex-shrink: 0; }
-.nav-logo-text { display: flex; flex-direction: column; line-height: 1.1; }
-.nav-logo-cn { font-size: 14px; font-weight: 500; letter-spacing: 0.04em; }
+.nav-logo-mark { flex-shrink: 0; display: block; }
+.nav-logo-text { display: flex; flex-direction: column; line-height: 1.05; gap: 2px; }
 .nav-logo-en {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.24em;
+}
+.nav-logo-ipa {
+  font-family: var(--font-mono);
+  font-size: 9px;
   color: var(--text-tertiary);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.04em;
 }
 .nav-links { display: flex; gap: 32px; }
 .nav-link {
@@ -1848,18 +1854,18 @@ h1, h2, h3, h4 {
   align-items: flex-start;
   gap: 14px;
 }
-.footer-brand svg { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
-.footer-brand-text { display: flex; flex-direction: column; gap: 4px; }
-.footer-brand-cn {
+.footer-brand img { flex-shrink: 0; margin-top: 2px; display: block; }
+.footer-brand-text { display: flex; flex-direction: column; gap: 6px; }
+.footer-brand-en {
   font-size: 18px;
   color: var(--text);
-  font-weight: 500;
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  letter-spacing: 0.24em;
 }
-.footer-brand-en {
+.footer-brand-tagline {
   font-size: 10px;
   color: var(--text-tertiary);
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
 }
 
 .footer-bottom {

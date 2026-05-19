@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IRYON · Final Brand · 焦青铜 · 上下结构</title>
+  <style>
+    :root {
+      --bg: #0B0D11;
+      --surface: #14161B;
+      --surface-2: #1A1D24;
+      --border: rgba(232, 232, 232, 0.08);
+      --text: #F4F5F7;
+      --text-dim: rgba(244, 245, 247, 0.55);
+      --text-dim-2: rgba(244, 245, 247, 0.32);
+      --bronze: #CD7F32;
+      --green: #4ADE80;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+      padding: 56px 5vw 120px;
+      min-height: 100vh;
+    }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+    /* Back link */
+    .back-link {
+      max-width: 1200px; margin: 0 auto 20px;
+      display: inline-flex; gap: 12px; align-items: center;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; letter-spacing: 0.12em;
+    }
+    .back-link a { color: var(--bronze); }
+
+    /* Header */
+    .header { max-width: 1200px; margin: 0 auto 48px; }
+    .eyebrow {
+      font-size: 11px; letter-spacing: 0.32em;
+      color: var(--bronze); margin-bottom: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+    h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 600; letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    h1 .bronze { color: var(--bronze); }
+    .sub {
+      color: var(--text-dim); font-size: 15px;
+      max-width: 720px; line-height: 1.7;
+    }
+
+    /* ── Hero showcase · giant vertical lockup ── */
+    .hero-showcase {
+      max-width: 1200px;
+      margin: 0 auto 96px;
+      background: linear-gradient(180deg, #0B0D11 0%, #14161B 100%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 64px 5vw;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-showcase::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(205, 127, 50, 0.06), transparent 60%);
+      pointer-events: none;
+    }
+    .hero-showcase::after {
+      content: '';
+      position: absolute;
+      inset: 24px;
+      border: 1px dashed rgba(205, 127, 50, 0.15);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+    .hero-lockup {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 480px;
+    }
+    .hero-lockup img {
+      width: clamp(280px, 35vw, 420px);
+      height: auto;
+    }
+    .hero-meta {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(205, 127, 50, 0.15);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .hero-meta-label {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      color: var(--text-dim-2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .hero-meta-value {
+      font-size: 14px;
+      color: var(--bronze);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      max-width: 1200px;
+      margin: 0 auto 24px;
+      display: flex; align-items: baseline; gap: 16px;
+    }
+    .section-title h2 {
+      font-size: 22px; font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .section-title-en {
+      font-size: 11px; color: var(--text-dim-2);
+      letter-spacing: 0.24em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .section-title-line {
+      flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── 3-variant row (color/white/black) ── */
+    .variant-grid {
+      max-width: 1200px;
+      margin: 0 auto 80px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 900px) { .variant-grid { grid-template-columns: 1fr; } }
+
+    .variant-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .variant-card.is-primary {
+      border-color: var(--bronze);
+      box-shadow: 0 0 0 1px var(--bronze), 0 8px 32px rgba(205, 127, 50, 0.12);
+    }
+    .variant-preview {
+      aspect-ratio: 2 / 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      position: relative;
+    }
+    .variant-preview.dark { background: #0B0D11; }
+    .variant-preview.light { background: #F4F5F7; }
+    .variant-preview.metal { background: linear-gradient(135deg, #8B7355 0%, #6B5635 100%); }
+    .variant-preview img { width: 100%; height: auto; max-height: 100%; }
+    .variant-preview-label {
+      position: absolute;
+      top: 12px; left: 14px;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: rgba(244, 245, 247, 0.5);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .variant-preview.light .variant-preview-label { color: rgba(11, 13, 17, 0.4); }
+    .variant-info {
+      padding: 18px 22px;
+      border-top: 1px solid var(--border);
+    }
+    .variant-title {
+      font-size: 14px; font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+    .variant-hex {
+      font-size: 11px; color: var(--text-dim-2);
+      letter-spacing: 0.18em;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 14px;
+    }
+    .variant-info p {
+      font-size: 12px; color: var(--text-dim);
+      line-height: 1.6; margin-bottom: 14px;
+    }
+    .btn-dl {
+      display: inline-flex;
+      align-items: center; gap: 6px;
+      padding: 7px 12px;
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-dl:hover {
+      color: var(--bronze);
+      border-color: var(--bronze);
+      background: rgba(205, 127, 50, 0.06);
+    }
+    .btn-dl[data-primary]:hover { background: var(--bronze); color: #0B0D11; }
+    .dl-row { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    /* ── Other compositions ── */
+    .other-grid {
+      max-width: 1200px;
+      margin: 0 auto 80px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) { .other-grid { grid-template-columns: 1fr; } }
+    .other-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .other-preview {
+      background: #0B0D11;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      min-height: 200px;
+    }
+    .other-preview-symbol img { width: 130px; height: 130px; }
+    .other-preview-lockup img { width: 100%; max-width: 600px; height: auto; }
+
+    /* ── ZIP CTA ── */
+    .cta-section {
+      max-width: 1200px;
+      margin: 0 auto 80px;
+      padding: 36px 40px;
+      background: linear-gradient(135deg, rgba(205, 127, 50, 0.10), rgba(205, 127, 50, 0.03));
+      border: 1px solid rgba(205, 127, 50, 0.25);
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .cta-text h3 {
+      font-size: 22px; font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .cta-text p {
+      font-size: 13px; color: var(--text-dim);
+      line-height: 1.6;
+    }
+    .btn-zip-big {
+      display: inline-flex;
+      align-items: center; gap: 10px;
+      padding: 16px 28px;
+      background: var(--bronze);
+      color: #0B0D11;
+      border: none;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.16em;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-zip-big:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(205, 127, 50, 0.3);
+    }
+    .btn-zip-big svg { width: 16px; height: 16px; }
+
+    /* ── Specs ── */
+    .specs {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 900px) { .specs { grid-template-columns: repeat(2, 1fr); } }
+    .spec-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .spec-label {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      color: var(--text-dim-2);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 8px;
+    }
+    .spec-value {
+      font-size: 16px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .spec-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--green); color: #0B0D11;
+      padding: 12px 24px; border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; letter-spacing: 0.1em;
+      font-weight: 600;
+      opacity: 0; transition: all 0.3s ease;
+      z-index: 9999;
+      box-shadow: 0 8px 24px rgba(74, 222, 128, 0.3);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back-link">
+    ← <a href="./brand-kit.html">brand kit</a> &nbsp;·&nbsp;
+    <a href="./index.html">live site</a>
+  </div>
+
+  <header class="header">
+    <div class="eyebrow">FINAL BRAND IDENTITY · LOCKED · 2026·05·19</div>
+    <h1><span class="bronze">IRYON</span> · 焦青铜 · 上下结构</h1>
+    <p class="sub">最终品牌身份。Logo <strong style="color:#F4F5F7">I · Iris-Scan-Pay</strong>，主色 <strong style="color:#CD7F32">焦青铜 #CD7F32</strong>，纵向 2:3 lockup。下方提供 3 个色变 + 横向版 + 纯 symbol 供办公室招牌、名片、海报、网页多场景使用。</p>
+  </header>
+
+  <!-- ═══════════ HERO LOCKUP ═══════════ -->
+  <div class="hero-showcase">
+    <div class="hero-lockup">
+      <img src="./assets/logos/iryon-i-vlockup-bronzeplus.svg" alt="IRYON Vertical Lockup"/>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">SYMBOL</span>
+        <span class="hero-meta-value">I · Iris-Scan-Pay</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">PALETTE</span>
+        <span class="hero-meta-value">焦青铜 BRONZE+</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">HEX</span>
+        <span class="hero-meta-value">#CD7F32</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">RATIO</span>
+        <span class="hero-meta-value">2:3 · 320×480</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">五行</span>
+        <span class="hero-meta-value">金(财) + 水(背景)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 3 COLOR VARIANTS ═══════════ -->
+  <div class="section-title">
+    <h2>3 种色变 · 应对不同墙面</h2>
+    <span class="section-title-en">3 COLOR VARIANTS FOR SIGN MAKER</span>
+    <span class="section-title-line"></span>
+  </div>
+
+  <div class="variant-grid">
+    <!-- Primary Bronze+ -->
+    <div class="variant-card is-primary">
+      <div class="variant-preview dark">
+        <span class="variant-preview-label">PRIMARY · DARK BG</span>
+        <img src="./assets/logos/iryon-i-vlockup-bronzeplus.svg" alt=""/>
+      </div>
+      <div class="variant-info">
+        <div class="variant-title">焦青铜 BRONZE+</div>
+        <div class="variant-hex">#CD7F32 · 主色版</div>
+        <p>办公室主入口 · 网页 nav · 名片 · 大堂玻璃贴 (黑色 / 玻璃 / 金属背板) · 各种数字场景默认使用。</p>
+        <div class="dl-row">
+          <a class="btn-dl" data-primary href="./assets/logos/iryon-i-vlockup-bronzeplus.svg" download="IRYON-vlockup-bronzeplus.svg">SVG ↓</a>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-vlockup-bronzeplus" data-scale="4">PNG 1.3K</button>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-vlockup-bronzeplus" data-scale="8">PNG 2.5K</button>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-vlockup-bronzeplus" data-scale="17">PNG 5.4K</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- White -->
+    <div class="variant-card">
+      <div class="variant-preview metal">
+        <span class="variant-preview-label">WHITE · DARK BG</span>
+        <img src="./assets/logos/iryon-i-vlockup-white.svg" alt=""/>
+      </div>
+      <div class="variant-info">
+        <div class="variant-title">白色版</div>
+        <div class="variant-hex">#FFFFFF · 深色墙</div>
+        <p>用于深色 / 黑色 / 木纹深色 / 拉丝金属 / 玻璃幕墙等深色背景。亚克力立体白字 / 金属蚀刻白漆都用这个版本。</p>
+        <div class="dl-row">
+          <a class="btn-dl" href="./assets/logos/iryon-i-vlockup-white.svg" download="IRYON-vlockup-white.svg">SVG ↓</a>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-vlockup-white" data-scale="4">PNG 1.3K</button>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-vlockup-white" data-scale="8">PNG 2.5K</button>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-vlockup-white" data-scale="17">PNG 5.4K</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Black -->
+    <div class="variant-card">
+      <div class="variant-preview light">
+        <span class="variant-preview-label">BLACK · LIGHT BG</span>
+        <img src="./assets/logos/iryon-i-vlockup-black.svg" alt=""/>
+      </div>
+      <div class="variant-info">
+        <div class="variant-title">黑色版</div>
+        <div class="variant-hex">#000000 · 浅色墙</div>
+        <p>用于白色 / 浅木纹 / 大理石 / 米白涂料 / 浅色纸张等浅色背景。黑字浅底是经典印刷组合,杂志页面也用。</p>
+        <div class="dl-row">
+          <a class="btn-dl" href="./assets/logos/iryon-i-vlockup-black.svg" download="IRYON-vlockup-black.svg">SVG ↓</a>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-vlockup-black" data-scale="4">PNG 1.3K</button>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-vlockup-black" data-scale="8">PNG 2.5K</button>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-vlockup-black" data-scale="17">PNG 5.4K</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ OTHER COMPOSITIONS ═══════════ -->
+  <div class="section-title">
+    <h2>其他构图 · 用于不同场景</h2>
+    <span class="section-title-en">SYMBOL ONLY · HORIZONTAL LOCKUP</span>
+    <span class="section-title-line"></span>
+  </div>
+
+  <div class="other-grid">
+    <div class="other-card">
+      <div class="other-preview other-preview-symbol">
+        <img src="./assets/logos/iryon-i-bronzeplus.svg" alt=""/>
+      </div>
+      <div class="variant-info">
+        <div class="variant-title">纯 Symbol</div>
+        <div class="variant-hex">240×240 · 方形</div>
+        <p>头像 · favicon · APP icon · 印章 · 不需要 wordmark 的场景。</p>
+        <div class="dl-row">
+          <a class="btn-dl" href="./assets/logos/iryon-i-bronzeplus.svg" download="IRYON-symbol-bronzeplus.svg">SVG ↓</a>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-bronzeplus" data-scale="4">1024</button>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-bronzeplus" data-scale="8">2048</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="other-card">
+      <div class="other-preview other-preview-lockup">
+        <img src="./assets/logos/iryon-i-lockup-bronzeplus.svg" alt=""/>
+      </div>
+      <div class="variant-info">
+        <div class="variant-title">横向 Lockup</div>
+        <div class="variant-hex">880×240 · 11:3 横向</div>
+        <p>网页 nav · 邮件签名 · 横向 banner · 公司 letterhead · 横排招牌。</p>
+        <div class="dl-row">
+          <a class="btn-dl" href="./assets/logos/iryon-i-lockup-bronzeplus.svg" download="IRYON-hlockup-bronzeplus.svg">SVG ↓</a>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-lockup-bronzeplus" data-scale="2">1760</button>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-lockup-bronzeplus" data-scale="4">3520</button>
+          <button class="btn-dl" data-action="dl-png" data-file="iryon-i-lockup-bronzeplus" data-scale="6">5280</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ ZIP CTA ═══════════ -->
+  <div class="cta-section">
+    <div class="cta-text">
+      <h3>📦 一次性下载完整品牌资产</h3>
+      <p>3 种色变 × 3 个构图（纵向 / 横向 / 纯 symbol） × 多个 PNG 尺寸 + README + 色板说明 + 招牌厂中英文指引。</p>
+    </div>
+    <button class="btn-zip-big" data-action="dl-zip-all">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      下载 IRYON-final-kit.zip
+    </button>
+  </div>
+
+  <!-- ═══════════ SPECS ═══════════ -->
+  <div class="section-title">
+    <h2>品牌规范</h2>
+    <span class="section-title-en">BRAND SPECIFICATIONS</span>
+    <span class="section-title-line"></span>
+  </div>
+
+  <div class="specs">
+    <div class="spec-card">
+      <div class="spec-label">PRIMARY COLOR</div>
+      <div class="spec-value" style="color:#CD7F32">#CD7F32</div>
+      <div class="spec-sub">CMYK 0/38/76/19 · RGB 205/127/50</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">WORDMARK FONT</div>
+      <div class="spec-value">Inter Bold</div>
+      <div class="spec-sub">Letter-spacing 14 @ 64px</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">PHONETIC</div>
+      <div class="spec-value">/ˈaɪ.ri.ɒn/</div>
+      <div class="spec-sub">EYE-ree-on (3 syllables)</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-label">TAGLINE</div>
+      <div class="spec-value" style="font-size:11px">A KEY THAT LIVES INSIDE YOU</div>
+      <div class="spec-sub">一把长在身体里的钥匙</div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">✓ 下载完成</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <script>
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function fetchSvg(filename) {
+      const res = await fetch(`./assets/logos/${filename}.svg`);
+      return res.text();
+    }
+
+    async function svgToPngBlob(svgText, scale) {
+      const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+      const vb = doc.documentElement.getAttribute('viewBox').split(/\s+/).map(Number);
+      const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(vb[2] * scale);
+          canvas.height = Math.round(vb[3] * scale);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(pngBlob => {
+            URL.revokeObjectURL(url);
+            resolve({ blob: pngBlob, w: canvas.width, h: canvas.height });
+          }, 'image/png');
+        };
+        img.onerror = e => { URL.revokeObjectURL(url); reject(e); };
+        img.src = url;
+      });
+    }
+
+    async function dlPng(filename, scale) {
+      const text = await fetchSvg(filename);
+      const { blob, w, h } = await svgToPngBlob(text, scale);
+      downloadBlob(blob, `${filename}-${w}x${h}.png`);
+      showToast(`✓ ${filename} (${w}×${h}) 完成`);
+    }
+
+    async function dlZipAll() {
+      showToast('📦 打包 IRYON-final-kit 中…');
+      const zip = new JSZip();
+      const root = zip.folder('IRYON-final-kit');
+
+      const files = [
+        { key: 'iryon-i-vlockup-bronzeplus', label: 'vlockup-bronzeplus', dim: '320x480' },
+        { key: 'iryon-i-vlockup-white',      label: 'vlockup-white',      dim: '320x480' },
+        { key: 'iryon-i-vlockup-black',      label: 'vlockup-black',      dim: '320x480' },
+        { key: 'iryon-i-lockup-bronzeplus',  label: 'hlockup-bronzeplus', dim: '880x240' },
+        { key: 'iryon-i-bronzeplus',         label: 'symbol-bronzeplus',  dim: '240x240' }
+      ];
+
+      const symbolScales = [
+        { n: '1024', s: 4 }, { n: '2048', s: 8 }, { n: '4096', s: 17 }
+      ];
+      const vlockupScales = [
+        { n: '1280x1920', s: 4 }, { n: '2560x3840', s: 8 }, { n: '5440x8160', s: 17 }
+      ];
+      const hlockupScales = [
+        { n: '1760x480', s: 2 }, { n: '3520x960', s: 4 }, { n: '5280x1440', s: 6 }
+      ];
+
+      for (const f of files) {
+        const text = await fetchSvg(f.key);
+        root.file(`SVG/IRYON-${f.label}.svg`, text);
+
+        let scales = symbolScales;
+        if (f.key.includes('vlockup')) scales = vlockupScales;
+        else if (f.key.includes('lockup')) scales = hlockupScales;
+
+        for (const { n, s } of scales) {
+          const { blob } = await svgToPngBlob(text, s);
+          root.file(`PNG/IRYON-${f.label}-${n}.png`, blob);
+        }
+      }
+
+      root.file('README.txt', `IRYON · Final Brand Kit
+================================================
+Brand: IRYON  ·  /ˈaɪ.ri.ɒn/  (EYE-ree-on)
+Tagline: A Key That Lives Inside You  (一把长在身体里的钥匙)
+Primary: #CD7F32 · 焦青铜 BRONZE+
+Logo: I · Iris-Scan-Pay (虹膜·扫描·支付波)
+Generated: ${new Date().toISOString().split('T')[0]}
+
+CONTENTS
+--------
+/SVG/  Vector files (印刷母版,无限缩放):
+  IRYON-vlockup-bronzeplus.svg   纵向 lockup (上下结构) · 主色   · 320×480
+  IRYON-vlockup-white.svg        纵向 lockup · 白色版 (深色墙)
+  IRYON-vlockup-black.svg        纵向 lockup · 黑色版 (浅色墙)
+  IRYON-hlockup-bronzeplus.svg   横向 lockup · 880×240 · 用于网页/邮件签名
+  IRYON-symbol-bronzeplus.svg    纯 symbol · 240×240 · 用于头像/favicon
+
+/PNG/  Raster renders at 3 resolutions per asset.
+  纵向 lockup: 1280×1920 / 2560×3840 / 5440×8160 (印刷级)
+  横向 lockup: 1760×480 / 3520×960 / 5280×1440
+  symbol:     1024 / 2048 / 4096 (square)
+
+USE GUIDE / 使用指引
+-------------------
+办公室主入口招牌 → vlockup-bronzeplus.svg + PNG 5440×8160 大尺寸喷绘
+                  或 vlockup-white.svg (黑色亚克力背板) / vlockup-black.svg (白色背板)
+网页 nav         → hlockup-bronzeplus.svg
+邮件签名         → hlockup-bronzeplus PNG 1760×480
+名片            → vlockup-bronzeplus (背面) + symbol (正面 logo 处)
+favicon         → symbol-bronzeplus.svg
+
+INSTRUCTIONS FOR SIGN MAKERS / 给招牌厂
+---------------------------------------
+1. 在 Adobe Illustrator 中打开 SVG
+2. 选中所有文字 (IRYON wordmark + /aɪ.ri.ɒn/ + tagline)
+3. Type → Create Outlines (Cmd+Shift+O on Mac, Ctrl+Shift+O on Win)
+   把字体转为矢量路径,避免无 Inter 字体导致排版变形
+4. 主色 PMS 接近 PANTONE 1395 C 或 PANTONE 7563 C
+
+BRAND SPECS
+-----------
+Color (Primary):  #CD7F32  ·  CMYK 0/38/76/19  ·  RGB 205/127/50
+Background:       #0B0D11 preferred (dark)
+Wordmark Font:    Inter Bold (https://fonts.google.com/specimen/Inter)
+Letter-spacing:   14 @ font-size 64px (vertical) / 22 @ 98px (horizontal)
+Phonetic Font:    JetBrains Mono / SF Mono (any monospace)
+Vertical Ratio:   2:3 (320×480)
+Horizontal Ratio: 11:3 (880×240)
+
+五行命理依据
+-----------
+日主丁火 · 生于卯月 · 身强 · 木火炎上
+用神: 金(财) + 水(官调候)
+忌神: 火(比劫) + 木(印)
+#CD7F32 焦青铜属"金"元素 (财用神)
+#0B0D11 近黑背景属"水"元素 (调候用神)
+两者组合形成"金水双用神"的命理对齐。
+
+CONTACT
+-------
+hello@iryon.tech
+`);
+
+      root.file('color-palette.txt', `IRYON · COLOR PALETTE
+========================
+Primary:    #CD7F32  ·  焦青铜 BRONZE+
+            CMYK 0/38/76/19
+            RGB 205/127/50
+            PANTONE 1395 C (closest match)
+
+Background: #0B0D11  ·  近黑
+Wordmark:   Inter Bold
+IPA gray:   #888888 (vertical) / variable per variant
+`);
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      downloadBlob(blob, 'IRYON-final-kit.zip');
+      showToast('✓ IRYON-final-kit.zip 下载完成');
+    }
+
+    document.body.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const a = btn.dataset.action;
+      try {
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        if (a === 'dl-png') await dlPng(btn.dataset.file, Number(btn.dataset.scale));
+        else if (a === 'dl-zip-all') await dlZipAll();
+      } catch (err) {
+        console.error(err);
+        showToast(`✗ 出错了: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
+    });
+  </script>
+</body>
+</html>
